@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PackRight – Suitcase Packing App</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header>
+      <div class="header-inner">
+        <div class="logo">🧳 PackRight</div>
+        <div class="header-actions">
+          <button id="btn-new-trip" class="btn btn-primary">+ New Trip</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Trip Selector -->
+    <div id="trip-bar" class="trip-bar hidden">
+      <div class="trip-bar-inner">
+        <select id="trip-select"></select>
+        <button id="btn-rename-trip" class="btn btn-ghost" title="Rename trip">✏️</button>
+        <button id="btn-delete-trip" class="btn btn-ghost btn-danger" title="Delete trip">🗑️</button>
+      </div>
+    </div>
+
+    <!-- Main content -->
+    <main id="main-content">
+      <!-- Empty state -->
+      <div id="empty-state" class="empty-state">
+        <div class="empty-icon">🧳</div>
+        <h2>No trips yet</h2>
+        <p>Create your first trip to start packing!</p>
+        <button class="btn btn-primary btn-large" id="btn-start">Create a Trip</button>
+      </div>
+
+      <!-- Trip view -->
+      <div id="trip-view" class="hidden">
+        <!-- Progress -->
+        <div class="progress-card">
+          <div class="progress-info">
+            <span id="progress-label">0 of 0 items packed</span>
+            <span id="progress-percent">0%</span>
+          </div>
+          <div class="progress-bar-track">
+            <div id="progress-bar" class="progress-bar-fill"></div>
+          </div>
+          <div class="progress-actions">
+            <button id="btn-uncheck-all" class="btn btn-ghost btn-sm">Uncheck all</button>
+            <button id="btn-check-all" class="btn btn-ghost btn-sm">Check all</button>
+          </div>
+        </div>
+
+        <!-- Add item -->
+        <div class="add-item-card">
+          <div class="add-item-row">
+            <input id="new-item-input" type="text" placeholder="Add an item…" autocomplete="off" />
+            <select id="new-item-category"></select>
+            <button id="btn-add-item" class="btn btn-primary">Add</button>
+          </div>
+        </div>
+
+        <!-- Packing list -->
+        <div id="categories-container"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal: New / Rename Trip -->
+  <div id="modal-overlay" class="modal-overlay hidden">
+    <div class="modal">
+      <h3 id="modal-title">New Trip</h3>
+      <div class="modal-body">
+        <label for="trip-name-input">Trip name</label>
+        <input id="trip-name-input" type="text" placeholder="e.g. Summer vacation" />
+        <label for="template-select" id="template-label">Start from a template</label>
+        <select id="template-select">
+          <option value="blank">Blank list</option>
+          <option value="beach">🏖️ Beach holiday</option>
+          <option value="business">💼 Business trip</option>
+          <option value="winter">⛷️ Winter / Ski trip</option>
+          <option value="camping">🏕️ Camping</option>
+          <option value="weekend">🏙️ Weekend getaway</option>
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button id="modal-cancel" class="btn btn-ghost">Cancel</button>
+        <button id="modal-confirm" class="btn btn-primary">Create</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
