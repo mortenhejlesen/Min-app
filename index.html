@@ -3,32 +3,41 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PackRight – Suitcase Packing App</title>
+  <title>PackRight – Family Packing App</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div id="app">
-    <!-- Header -->
+
+    <!-- ── Header ── -->
     <header>
       <div class="header-inner">
         <div class="logo">🧳 PackRight</div>
         <div class="header-actions">
+          <button id="btn-kid-mode" class="btn btn-ghost btn-sm" title="Toggle kid-friendly mode">🧒 Kid Mode</button>
+          <button id="btn-import" class="btn btn-ghost btn-sm">📥 Import</button>
           <button id="btn-new-trip" class="btn btn-primary">+ New Trip</button>
         </div>
       </div>
     </header>
 
-    <!-- Trip Selector -->
+    <!-- ── Trip bar ── -->
     <div id="trip-bar" class="trip-bar hidden">
       <div class="trip-bar-inner">
-        <select id="trip-select"></select>
-        <button id="btn-rename-trip" class="btn btn-ghost" title="Rename trip">✏️</button>
-        <button id="btn-delete-trip" class="btn btn-ghost btn-danger" title="Delete trip">🗑️</button>
+        <div class="trip-select-row">
+          <select id="trip-select"></select>
+          <button id="btn-rename-trip"   class="btn btn-ghost btn-icon" title="Rename trip">✏️</button>
+          <button id="btn-save-template" class="btn btn-ghost btn-icon" title="Save as template">💾</button>
+          <button id="btn-share-trip"    class="btn btn-ghost btn-icon" title="Share trip">🔗</button>
+          <button id="btn-delete-trip"   class="btn btn-ghost btn-icon btn-danger" title="Delete trip">🗑️</button>
+        </div>
+        <div id="member-filter-row" class="member-filter-row"></div>
       </div>
     </div>
 
-    <!-- Main content -->
+    <!-- ── Main ── -->
     <main id="main-content">
+
       <!-- Empty state -->
       <div id="empty-state" class="empty-state">
         <div class="empty-icon">🧳</div>
@@ -39,6 +48,10 @@
 
       <!-- Trip view -->
       <div id="trip-view" class="hidden">
+
+        <!-- Member summary cards -->
+        <div id="member-summary" class="member-summary hidden"></div>
+
         <!-- Progress -->
         <div class="progress-card">
           <div class="progress-info">
@@ -48,50 +61,177 @@
           <div class="progress-bar-track">
             <div id="progress-bar" class="progress-bar-fill"></div>
           </div>
+          <div id="kid-stars" class="kid-stars hidden"></div>
           <div class="progress-actions">
             <button id="btn-uncheck-all" class="btn btn-ghost btn-sm">Uncheck all</button>
-            <button id="btn-check-all" class="btn btn-ghost btn-sm">Check all</button>
+            <button id="btn-check-all"   class="btn btn-ghost btn-sm">Check all</button>
           </div>
         </div>
 
         <!-- Add item -->
         <div class="add-item-card">
           <div class="add-item-row">
-            <input id="new-item-input" type="text" placeholder="Add an item…" autocomplete="off" />
+            <input id="new-item-input" type="text" placeholder="Add an item…" autocomplete="off" list="suggestions-list" />
+            <datalist id="suggestions-list"></datalist>
             <select id="new-item-category"></select>
+            <select id="new-item-assignee"></select>
             <button id="btn-add-item" class="btn btn-primary">Add</button>
+          </div>
+          <div class="add-item-extras">
+            <label class="extras-label" for="new-item-qty">Qty</label>
+            <input id="new-item-qty" type="number" min="1" max="99" value="1" />
+            <input id="new-item-note" type="text" placeholder="Optional note…" />
           </div>
         </div>
 
         <!-- Packing list -->
         <div id="categories-container"></div>
-      </div>
-    </main>
-  </div>
 
-  <!-- Modal: New / Rename Trip -->
+        <!-- Trip notes / comments -->
+        <div class="comments-card">
+          <div class="comments-header">
+            <h4>📝 Trip Notes</h4>
+            <button id="btn-toggle-comments" class="btn btn-ghost btn-sm">▾</button>
+          </div>
+          <div id="comments-body">
+            <ul id="comments-list" class="comments-list"></ul>
+            <div class="add-comment-row">
+              <input id="comment-input" type="text" placeholder="Add a reminder or note…" />
+              <select id="comment-author"></select>
+              <button id="btn-add-comment" class="btn btn-primary btn-sm">Add</button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /trip-view -->
+    </main>
+  </div><!-- /app -->
+
+  <!-- ════════════════════════════════════════
+       MODALS
+  ════════════════════════════════════════ -->
   <div id="modal-overlay" class="modal-overlay hidden">
-    <div class="modal">
-      <h3 id="modal-title">New Trip</h3>
+
+    <!-- Create / Rename trip -->
+    <div class="modal hidden" id="modal-trip">
+      <h3 id="modal-trip-title">New Trip</h3>
       <div class="modal-body">
-        <label for="trip-name-input">Trip name</label>
+        <label>Trip name</label>
         <input id="trip-name-input" type="text" placeholder="e.g. Summer vacation" />
-        <label for="template-select" id="template-label">Start from a template</label>
-        <select id="template-select">
-          <option value="blank">Blank list</option>
-          <option value="beach">🏖️ Beach holiday</option>
-          <option value="business">💼 Business trip</option>
-          <option value="winter">⛷️ Winter / Ski trip</option>
-          <option value="camping">🏕️ Camping</option>
-          <option value="weekend">🏙️ Weekend getaway</option>
-        </select>
+        <div id="template-section">
+          <label>Start from a template</label>
+          <select id="template-select">
+            <option value="blank">Blank list</option>
+            <option value="beach">🏖️ Beach holiday</option>
+            <option value="business">💼 Business trip</option>
+            <option value="winter">⛷️ Winter / Ski trip</option>
+            <option value="camping">🏕️ Camping</option>
+            <option value="weekend">🏙️ Weekend getaway</option>
+            <option value="baby">👶 Baby trip</option>
+            <option value="toddler">🧒 Toddler trip</option>
+            <option value="school_trip">🏫 School trip</option>
+            <option value="sports_camp">⚽ Sports camp</option>
+          </select>
+          <div id="personal-templates-row" class="hidden">
+            <label>My saved templates</label>
+            <select id="personal-template-select"></select>
+          </div>
+        </div>
       </div>
       <div class="modal-actions">
-        <button id="modal-cancel" class="btn btn-ghost">Cancel</button>
-        <button id="modal-confirm" class="btn btn-primary">Create</button>
+        <button class="btn btn-ghost modal-cancel">Cancel</button>
+        <button id="modal-trip-confirm" class="btn btn-primary">Create</button>
       </div>
     </div>
-  </div>
+
+    <!-- Add family member -->
+    <div class="modal hidden" id="modal-member">
+      <h3>Add Family Member</h3>
+      <div class="modal-body">
+        <label>Name</label>
+        <input id="member-name-input" type="text" placeholder="e.g. Emma" />
+        <label>Colour</label>
+        <div id="color-picker" class="color-picker"></div>
+        <label class="checkbox-label">
+          <input type="checkbox" id="member-is-kid" /> This is a child 🧒
+        </label>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost modal-cancel">Cancel</button>
+        <button id="modal-member-confirm" class="btn btn-primary">Add Member</button>
+      </div>
+    </div>
+
+    <!-- Share trip -->
+    <div class="modal hidden" id="modal-share">
+      <h3>🔗 Share Trip</h3>
+      <div class="modal-body">
+        <p class="modal-desc">Share this trip with family so everyone can see and check off their items.</p>
+        <label>Share link</label>
+        <div class="copy-row">
+          <input id="share-link-input" type="text" readonly />
+          <button id="btn-copy-link" class="btn btn-primary btn-sm">Copy</button>
+        </div>
+        <label>Share code</label>
+        <div class="copy-row">
+          <input id="share-code-input" type="text" readonly />
+          <button id="btn-copy-code" class="btn btn-ghost btn-sm">Copy</button>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost modal-cancel">Close</button>
+      </div>
+    </div>
+
+    <!-- Import trip -->
+    <div class="modal hidden" id="modal-import">
+      <h3>📥 Import Trip</h3>
+      <div class="modal-body">
+        <label>Paste a share code</label>
+        <input id="import-code-input" type="text" placeholder="Paste code here…" />
+        <p id="import-error" class="error-text hidden">Invalid code – please check and try again.</p>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost modal-cancel">Cancel</button>
+        <button id="modal-import-confirm" class="btn btn-primary">Import</button>
+      </div>
+    </div>
+
+    <!-- Save as template -->
+    <div class="modal hidden" id="modal-save-template">
+      <h3>💾 Save as Template</h3>
+      <div class="modal-body">
+        <label>Template name</label>
+        <input id="template-name-input" type="text" placeholder="e.g. Our Mallorca setup" />
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost modal-cancel">Cancel</button>
+        <button id="modal-save-template-confirm" class="btn btn-primary">Save Template</button>
+      </div>
+    </div>
+
+    <!-- Edit item -->
+    <div class="modal hidden" id="modal-item-edit">
+      <h3>Edit Item</h3>
+      <div class="modal-body">
+        <label>Name</label>
+        <input id="edit-item-name" type="text" />
+        <label>Quantity</label>
+        <input id="edit-item-qty" type="number" min="1" max="99" value="1" />
+        <label>Note</label>
+        <input id="edit-item-note" type="text" placeholder="Optional note…" />
+        <label>Category</label>
+        <select id="edit-item-cat"></select>
+        <label>Assigned to</label>
+        <select id="edit-item-assignee"></select>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost modal-cancel">Cancel</button>
+        <button id="modal-item-edit-confirm" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+
+  </div><!-- /modal-overlay -->
 
   <script src="app.js"></script>
 </body>
