@@ -483,6 +483,9 @@ function renderAll() {
   renderComments(trip);
   renderAssigneeSelect(trip);
   renderCommentAuthorSelect(trip);
+  // Section label: show how many items total
+  const lbl = $('list-section-label');
+  if (lbl) lbl.textContent = trip.items.length ? 'Packing List' : '';
 }
 
 /* ════════════════════════════════════════
@@ -526,10 +529,15 @@ function handleDragEnd() {
 
 function openModal(id) {
   document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
-  $(id).classList.remove('hidden');
+  const modal = $(id);
+  modal.classList.remove('hidden');
+  // Re-trigger entry animation each time the modal opens
+  modal.style.animation = 'none';
+  void modal.offsetWidth;
+  modal.style.animation = '';
   $('modal-overlay').classList.remove('hidden');
   activeModal = id;
-  const first = $(id).querySelector('input[type="text"]');
+  const first = modal.querySelector('input[type="text"]');
   if (first) setTimeout(() => first.focus(), 50);
 }
 
@@ -588,9 +596,13 @@ function addMember(name, color, isKid) {
 function addItem(name, cat, assignedTo, qty, note) {
   const trip = getActiveTrip();
   if (!trip) return;
-  trip.items.push({ id: uid(), name, cat, checked: false, qty: qty || 1, note: note || '', assignedTo });
+  const newItem = { id: uid(), name, cat, checked: false, qty: qty || 1, note: note || '', assignedTo };
+  trip.items.push(newItem);
   saveState();
   renderAll();
+  // Animate the new row in
+  const row = document.querySelector(`.item-row[data-id="${newItem.id}"]`);
+  if (row) row.classList.add('new');
 }
 
 function toggleItem(itemId) {

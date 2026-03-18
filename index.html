@@ -15,8 +15,8 @@
         <div class="logo">🧳 PackRight</div>
         <div class="header-actions">
           <button id="btn-kid-mode" class="btn btn-ghost btn-sm" title="Toggle kid-friendly mode">🧒 Kid Mode</button>
-          <button id="btn-import" class="btn btn-ghost btn-sm">📥 Import</button>
-          <button id="btn-new-trip" class="btn btn-primary">+ New Trip</button>
+          <button id="btn-import" class="btn btn-ghost btn-sm">Import</button>
+          <button id="btn-new-trip" class="btn btn-primary btn-sm">+ New Trip</button>
         </div>
       </div>
     </header>
@@ -26,10 +26,12 @@
       <div class="trip-bar-inner">
         <div class="trip-select-row">
           <select id="trip-select"></select>
-          <button id="btn-rename-trip"   class="btn btn-ghost btn-icon" title="Rename trip">✏️</button>
-          <button id="btn-save-template" class="btn btn-ghost btn-icon" title="Save as template">💾</button>
-          <button id="btn-share-trip"    class="btn btn-ghost btn-icon" title="Share trip">🔗</button>
-          <button id="btn-delete-trip"   class="btn btn-ghost btn-icon btn-danger" title="Delete trip">🗑️</button>
+          <div class="trip-actions">
+            <button id="btn-rename-trip"   class="btn btn-icon" title="Rename trip">✏️</button>
+            <button id="btn-save-template" class="btn btn-icon" title="Save as template">💾</button>
+            <button id="btn-share-trip"    class="btn btn-icon" title="Share trip">🔗</button>
+            <button id="btn-delete-trip"   class="btn btn-icon btn-danger" title="Delete trip">🗑️</button>
+          </div>
         </div>
         <div id="member-filter-row" class="member-filter-row"></div>
       </div>
@@ -40,64 +42,71 @@
 
       <!-- Empty state -->
       <div id="empty-state" class="empty-state">
-        <div class="empty-icon">🧳</div>
+        <div class="empty-illustration">🧳</div>
         <h2>No trips yet</h2>
-        <p>Create your first trip to start packing!</p>
+        <p>Create your first trip to start building your perfect packing list.</p>
         <button class="btn btn-primary btn-large" id="btn-start">Create a Trip</button>
       </div>
 
       <!-- Trip view -->
       <div id="trip-view" class="hidden">
 
-        <!-- Member summary cards -->
+        <!-- Member progress summary -->
         <div id="member-summary" class="member-summary hidden"></div>
 
-        <!-- Progress -->
+        <!-- Overall progress -->
         <div class="progress-card">
-          <div class="progress-info">
-            <span id="progress-label">0 of 0 items packed</span>
-            <span id="progress-percent">0%</span>
+          <div class="progress-header">
+            <div class="progress-text">
+              <p id="progress-label" class="progress-label">0 of 0 items packed</p>
+            </div>
+            <span id="progress-percent" class="progress-percent">0%</span>
           </div>
-          <div class="progress-bar-track">
-            <div id="progress-bar" class="progress-bar-fill"></div>
+          <div class="progress-track">
+            <div id="progress-bar" class="progress-fill"></div>
           </div>
           <div id="kid-stars" class="kid-stars hidden"></div>
-          <div class="progress-actions">
-            <button id="btn-uncheck-all" class="btn btn-ghost btn-sm">Uncheck all</button>
-            <button id="btn-check-all"   class="btn btn-ghost btn-sm">Check all</button>
+          <div class="progress-footer">
+            <button id="btn-uncheck-all" class="btn btn-ghost btn-xs">Clear all</button>
+            <button id="btn-check-all"   class="btn btn-ghost btn-xs">Check all</button>
           </div>
         </div>
 
         <!-- Add item -->
         <div class="add-item-card">
-          <div class="add-item-row">
-            <input id="new-item-input" type="text" placeholder="Add an item…" autocomplete="off" list="suggestions-list" />
+          <div class="add-item-primary">
+            <input id="new-item-input" type="text" placeholder="Add an item to your list…" autocomplete="off" list="suggestions-list" class="add-item-input" />
             <datalist id="suggestions-list"></datalist>
-            <select id="new-item-category"></select>
-            <select id="new-item-assignee"></select>
             <button id="btn-add-item" class="btn btn-primary">Add</button>
           </div>
-          <div class="add-item-extras">
-            <label class="extras-label" for="new-item-qty">Qty</label>
-            <input id="new-item-qty" type="number" min="1" max="99" value="1" />
-            <input id="new-item-note" type="text" placeholder="Optional note…" />
+          <div class="add-item-meta">
+            <select id="new-item-category" class="meta-select"></select>
+            <select id="new-item-assignee" class="meta-select"></select>
+            <div class="qty-group">
+              <label for="new-item-qty" class="qty-label">Qty</label>
+              <input id="new-item-qty" type="number" min="1" max="99" value="1" class="qty-input" />
+            </div>
+            <input id="new-item-note" type="text" placeholder="Note…" class="note-input" />
           </div>
         </div>
 
-        <!-- Packing list -->
+        <!-- Section label -->
+        <p class="section-label" id="list-section-label"></p>
+
+        <!-- Packing categories -->
         <div id="categories-container"></div>
 
-        <!-- Trip notes / comments -->
+        <!-- Trip notes -->
         <div class="comments-card">
           <div class="comments-header">
-            <h4>📝 Trip Notes</h4>
-            <button id="btn-toggle-comments" class="btn btn-ghost btn-sm">▾</button>
+            <span class="section-label-inline">Trip Notes</span>
+            <button id="btn-toggle-comments" class="btn btn-icon btn-sm">▾</button>
           </div>
           <div id="comments-body">
             <ul id="comments-list" class="comments-list"></ul>
             <div class="add-comment-row">
-              <input id="comment-input" type="text" placeholder="Add a reminder or note…" />
-              <select id="comment-author"></select>
+              <input id="comment-input" type="text" placeholder="Add a reminder or note for the trip…" />
+              <select id="comment-author" class="meta-select"></select>
               <button id="btn-add-comment" class="btn btn-primary btn-sm">Add</button>
             </div>
           </div>
@@ -107,9 +116,9 @@
     </main>
   </div><!-- /app -->
 
-  <!-- ════════════════════════════════════════
+  <!-- ══════════════════════════════════════
        MODALS
-  ════════════════════════════════════════ -->
+  ══════════════════════════════════════ -->
   <div id="modal-overlay" class="modal-overlay hidden">
 
     <!-- Create / Rename trip -->
@@ -117,7 +126,7 @@
       <h3 id="modal-trip-title">New Trip</h3>
       <div class="modal-body">
         <label>Trip name</label>
-        <input id="trip-name-input" type="text" placeholder="e.g. Summer vacation" />
+        <input id="trip-name-input" type="text" placeholder="e.g. Summer vacation 2026" />
         <div id="template-section">
           <label>Start from a template</label>
           <select id="template-select">
@@ -164,9 +173,9 @@
 
     <!-- Share trip -->
     <div class="modal hidden" id="modal-share">
-      <h3>🔗 Share Trip</h3>
+      <h3>Share Trip</h3>
       <div class="modal-body">
-        <p class="modal-desc">Share this trip with family so everyone can see and check off their items.</p>
+        <p class="modal-desc">Send this link or code to your family so they can open the trip on their own device.</p>
         <label>Share link</label>
         <div class="copy-row">
           <input id="share-link-input" type="text" readonly />
@@ -185,11 +194,11 @@
 
     <!-- Import trip -->
     <div class="modal hidden" id="modal-import">
-      <h3>📥 Import Trip</h3>
+      <h3>Import Trip</h3>
       <div class="modal-body">
         <label>Paste a share code</label>
         <input id="import-code-input" type="text" placeholder="Paste code here…" />
-        <p id="import-error" class="error-text hidden">Invalid code – please check and try again.</p>
+        <p id="import-error" class="error-text hidden">Invalid code — please check and try again.</p>
       </div>
       <div class="modal-actions">
         <button class="btn btn-ghost modal-cancel">Cancel</button>
@@ -199,7 +208,7 @@
 
     <!-- Save as template -->
     <div class="modal hidden" id="modal-save-template">
-      <h3>💾 Save as Template</h3>
+      <h3>Save as Template</h3>
       <div class="modal-body">
         <label>Template name</label>
         <input id="template-name-input" type="text" placeholder="e.g. Our Mallorca setup" />
@@ -227,7 +236,7 @@
       </div>
       <div class="modal-actions">
         <button class="btn btn-ghost modal-cancel">Cancel</button>
-        <button id="modal-item-edit-confirm" class="btn btn-primary">Save</button>
+        <button id="modal-item-edit-confirm" class="btn btn-primary">Save Changes</button>
       </div>
     </div>
 
