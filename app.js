@@ -21,7 +21,6 @@ const CATEGORIES = [
   { id: 'misc',        label: '📦 Misc' },
 ];
 
-// ── Smart suggestions master list ──
 const SUGGESTIONS = [
   'T-shirts','Shirts','Trousers','Jeans','Shorts','Dress','Skirt',
   'Underwear','Socks','Pyjamas','Swimsuit','Bikini','Swim trunks',
@@ -55,7 +54,6 @@ const SUGGESTIONS = [
   'Beach towel','Microfibre towel','Multi-tool','Torch',
 ];
 
-// ── Templates ──
 const TEMPLATES = {
   blank: [],
 
@@ -216,11 +214,17 @@ let state = {
   activeMember: 'all',
   personalTemplates: [],
   kidMode: false,
+  darkMode: null,          // null = auto-detect system pref
+  showOnlyRemaining: false,
 };
 
-let dragSrcId  = null;
-let editItemId = null;
-let activeModal = null;
+// Module-level transient state (not persisted)
+let dragSrcId       = null;
+let editItemId      = null;
+let activeModal     = null;
+let searchQuery     = '';
+let lastDeleted     = null;  // { item, tripId, index } for undo
+let progressSnapshot = {};   // { [tripId]: number } to detect 100% crossing
 
 function loadState() {
   try {
@@ -249,8 +253,25 @@ function getMember(trip, memberId) {
 }
 
 function visibleItems(trip) {
-  if (state.activeMember === 'all') return trip.items;
-  return trip.items.filter(i => i.assignedTo === 'all' || i.assignedTo === state.activeMember);
+  let items = trip.items;
+
+  // Filter by active member
+  if (state.activeMember !== 'all') {
+    items = items.filter(i => i.assignedTo === 'all' || i.assignedTo === state.activeMember);
+  }
+
+  // Filter by search query
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    items = items.filter(i => i.name.toLowerCase().includes(q));
+  }
+
+  // Filter to unchecked only
+  if (state.showOnlyRemaining) {
+    items = items.filter(i => !i.checked);
+  }
+
+  return items;
 }
 
 function escapeHtml(str) {
@@ -267,6 +288,108 @@ function encodeTrip(trip) {
 
 function decodeTrip(code) {
   return JSON.parse(decodeURIComponent(escape(atob(code.trim()))));
+}
+
+/* ════════════════════════════════════════
+   DARK MODE
+════════════════════════════════════════ */
+
+function applyDarkMode() {
+  document.documentElement.classList.toggle('dark', state.darkMode);
+  $('btn-dark-mode').textContent = state.darkMode ? '☀️' : '🌙';
+  $('btn-dark-mode').title = state.darkMode ? 'Switch to light mode' : 'Switch to dark mode';
+}
+
+/* ════════════════════════════════════════
+   CONFETTI
+════════════════════════════════════════ */
+
+function launchConfetti() {
+  const canvas = document.createElement('canvas');
+  canvas.style.cssText =
+    'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:999;';
+  document.body.appendChild(canvas);
+
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const W   = window.innerWidth;
+  const H   = window.innerHeight;
+  canvas.width  = W * dpr;
+  canvas.height = H * dpr;
+  ctx.scale(dpr, dpr);
+
+  const colors = ['#30d158','#0a84ff','#ff9f0a','#ff453a','#bf5af2','#ff375f','#ffd60a','#64d2ff'];
+
+  const particles = Array.from({ length: 110 }, (_, i) => ({
+    x:  W * (0.25 + Math.random() * 0.5),
+    y:  H * 0.45,
+    vx: (Math.random() - 0.5) * 14,
+    vy: -(Math.random() * 16 + 7),
+    gravity: 0.45 + Math.random() * 0.2,
+    drag: 0.99,
+    color: colors[i % colors.length],
+    w: Math.random() * 9 + 4,
+    h: Math.random() * 5 + 3,
+    angle: Math.random() * Math.PI * 2,
+    spin:  (Math.random() - 0.5) * 0.28,
+    opacity: 1,
+  }));
+
+  let frame = 0;
+  const total = 150;
+
+  (function animate() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => {
+      p.x  += p.vx;
+      p.y  += p.vy;
+      p.vy += p.gravity;
+      p.vx *= p.drag;
+      p.angle += p.spin;
+      if (frame > 90) p.opacity = Math.max(0, 1 - (frame - 90) / 60);
+      ctx.save();
+      ctx.globalAlpha = p.opacity;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.angle);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx.restore();
+    });
+    frame++;
+    if (frame < total) requestAnimationFrame(animate);
+    else canvas.remove();
+  })();
+}
+
+/* ════════════════════════════════════════
+   TRIP DATE / COUNTDOWN
+════════════════════════════════════════ */
+
+function getCountdownText(dateStr) {
+  if (!dateStr) return null;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const dep   = new Date(dateStr); dep.setHours(0,0,0,0);
+  const days  = Math.round((dep - today) / 86400000);
+  if (days < 0)  return null;
+  if (days === 0) return '✈️ Today!';
+  if (days === 1) return '✈️ Tomorrow!';
+  if (days <= 6)  return `✈️ In ${days} days`;
+  if (days <= 30) return `📅 In ${days} days`;
+  return `📅 ${dep.toLocaleDateString('en-GB', { day:'numeric', month:'short' })}`;
+}
+
+function renderTripDate(trip) {
+  const btn  = $('btn-trip-date');
+  const text = trip.departureDate ? getCountdownText(trip.departureDate) : null;
+  if (text) {
+    btn.textContent = text;
+    btn.classList.add('has-date');
+    btn.classList.remove('hidden');
+  } else {
+    btn.textContent = '📅 Set date';
+    btn.classList.remove('has-date');
+    btn.classList.remove('hidden');
+  }
 }
 
 /* ════════════════════════════════════════
@@ -354,11 +477,22 @@ function renderProgress(trip) {
   $('progress-percent').textContent = `${pct}%`;
   $('progress-bar').style.width = `${pct}%`;
 
+  // Kid stars
   if (state.kidMode) {
-    const n = 10;
+    const n      = 10;
     const filled = Math.round((pct / 100) * n);
-    const msg = pct === 100 ? ' 🥳 All done!' : pct >= 75 ? ' 💪 Almost there!' : pct >= 50 ? ' ⭐ Good going!' : pct > 0 ? ' 😊 Great start!' : '';
+    const msg    = pct === 100 ? ' 🥳 All done!'
+                 : pct >= 75  ? ' 💪 Almost there!'
+                 : pct >= 50  ? ' ⭐ Good going!'
+                 : pct > 0    ? ' 😊 Great start!' : '';
     $('kid-stars').innerHTML = '⭐'.repeat(filled) + '☆'.repeat(n - filled) + msg;
+  }
+
+  // Confetti when hitting 100%
+  const prev = progressSnapshot[trip.id] ?? -1;
+  progressSnapshot[trip.id] = pct;
+  if (pct === 100 && prev < 100 && total > 0) {
+    setTimeout(launchConfetti, 280);
   }
 }
 
@@ -368,7 +502,7 @@ function renderCategories(trip) {
   CATEGORIES.forEach(c => { byCat[c.id] = []; });
   items.forEach(item => {
     if (byCat[item.cat]) byCat[item.cat].push(item);
-    else { byCat['misc'].push(item); }
+    else                 byCat['misc'].push(item);
   });
 
   const ctn = $('categories-container');
@@ -392,12 +526,11 @@ function renderCategories(trip) {
       <ul class="category-items"></ul>`;
 
     const list   = card.querySelector('.category-items');
-    const header = card.querySelector('.category-header');
     const toggle = card.querySelector('.category-toggle');
 
     catItems.forEach(item => list.appendChild(buildItemRow(item, trip)));
 
-    header.addEventListener('click', () => {
+    card.querySelector('.category-header').addEventListener('click', () => {
       toggle.classList.toggle('collapsed');
       list.classList.toggle('collapsed');
     });
@@ -418,7 +551,7 @@ function buildItemRow(item, trip) {
   const noteIcon = item.note ? `<span class="note-icon" title="${escapeHtml(item.note)}">📝</span>` : '';
 
   li.innerHTML = `
-    <span class="drag-handle">⠿</span>
+    <span class="drag-handle"></span>
     <div class="item-checkbox${item.checked ? ' checked' : ''}" data-id="${item.id}"></div>
     <span class="item-label${item.checked ? ' checked' : ''}">${escapeHtml(item.name)}${qtySpan}</span>
     ${badge}${noteIcon}
@@ -463,6 +596,25 @@ function renderComments(trip) {
   }).join('');
 }
 
+function renderFilterBar(trip) {
+  const bar = $('filter-bar');
+  if (!trip || trip.items.length === 0) {
+    bar.classList.add('hidden');
+    return;
+  }
+  bar.classList.remove('hidden');
+
+  // Sync "remaining" button state
+  $('btn-show-remaining').classList.toggle('active', state.showOnlyRemaining);
+
+  // Sync search input value (without triggering change loops)
+  const inp = $('search-input');
+  if (inp.value !== searchQuery) inp.value = searchQuery;
+
+  // Show/hide clear button
+  $('btn-clear-search').classList.toggle('hidden', !searchQuery);
+}
+
 function renderAll() {
   const hasTrips = state.trips.length > 0;
   $('trip-bar').classList.toggle('hidden', !hasTrips);
@@ -472,10 +624,12 @@ function renderAll() {
 
   renderTripSelect();
   renderKidMode();
+  applyDarkMode();
 
   const trip = getActiveTrip();
   if (!trip) return;
 
+  renderTripDate(trip);
   renderMemberFilter(trip);
   renderMemberSummary(trip);
   renderProgress(trip);
@@ -483,7 +637,9 @@ function renderAll() {
   renderComments(trip);
   renderAssigneeSelect(trip);
   renderCommentAuthorSelect(trip);
-  // Section label: show how many items total
+  renderFilterBar(trip);
+
+  // Section label
   const lbl = $('list-section-label');
   if (lbl) lbl.textContent = trip.items.length ? 'Packing List' : '';
 }
@@ -531,13 +687,13 @@ function openModal(id) {
   document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
   const modal = $(id);
   modal.classList.remove('hidden');
-  // Re-trigger entry animation each time the modal opens
+  // Re-trigger CSS entrance animation each open
   modal.style.animation = 'none';
   void modal.offsetWidth;
   modal.style.animation = '';
   $('modal-overlay').classList.remove('hidden');
   activeModal = id;
-  const first = modal.querySelector('input[type="text"]');
+  const first = modal.querySelector('input[type="text"], input[type="date"]');
   if (first) setTimeout(() => first.focus(), 50);
 }
 
@@ -548,10 +704,52 @@ function closeModal() {
 }
 
 /* ════════════════════════════════════════
+   TOAST (with optional undo)
+════════════════════════════════════════ */
+
+function showToast(msg) {
+  _showToastEl(msg, null);
+}
+
+function showToastWithUndo(msg, undoFn) {
+  _showToastEl(msg, undoFn);
+}
+
+function _showToastEl(msg, undoFn) {
+  // Remove any existing toast
+  document.querySelectorAll('.toast').forEach(t => t.remove());
+
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = escapeHtml(msg) +
+    (undoFn ? `<button class="toast-undo">Undo</button>` : '');
+  document.body.appendChild(t);
+
+  if (undoFn) {
+    t.querySelector('.toast-undo').addEventListener('click', () => {
+      undoFn();
+      t.classList.remove('visible');
+      setTimeout(() => t.remove(), 250);
+    });
+  }
+
+  requestAnimationFrame(() => requestAnimationFrame(() => t.classList.add('visible')));
+  const timer = setTimeout(() => {
+    t.classList.remove('visible');
+    setTimeout(() => t.remove(), 250);
+  }, undoFn ? 4500 : 2500);
+
+  // Cancel auto-dismiss if undo is clicked
+  if (undoFn) {
+    t.querySelector('.toast-undo').addEventListener('click', () => clearTimeout(timer));
+  }
+}
+
+/* ════════════════════════════════════════
    ACTIONS
 ════════════════════════════════════════ */
 
-function createTrip(name, templateKey, personalTemplateId) {
+function createTrip(name, templateKey, personalTemplateId, departureDate) {
   let src;
   if (personalTemplateId) {
     const pt = state.personalTemplates.find(t => t.id === personalTemplateId);
@@ -563,17 +761,24 @@ function createTrip(name, templateKey, personalTemplateId) {
     id: uid(), name: t.name, cat: t.cat,
     checked: false, qty: 1, note: '', assignedTo: 'all',
   }));
-  const trip = { id: uid(), name, members: [], items, comments: [] };
+  const trip = {
+    id: uid(), name, members: [], items, comments: [],
+    departureDate: departureDate || null,
+  };
   state.trips.push(trip);
-  state.activeTrip  = trip.id;
+  state.activeTrip   = trip.id;
   state.activeMember = 'all';
   saveState();
   renderAll();
 }
 
-function renameTrip(name) {
+function renameTrip(name, departureDate) {
   const trip = getActiveTrip();
-  if (trip) { trip.name = name; saveState(); renderAll(); }
+  if (!trip) return;
+  trip.name = name;
+  trip.departureDate = departureDate || null;
+  saveState();
+  renderAll();
 }
 
 function deleteActiveTrip() {
@@ -600,7 +805,7 @@ function addItem(name, cat, assignedTo, qty, note) {
   trip.items.push(newItem);
   saveState();
   renderAll();
-  // Animate the new row in
+  // Animate new row
   const row = document.querySelector(`.item-row[data-id="${newItem.id}"]`);
   if (row) row.classList.add('new');
 }
@@ -615,9 +820,27 @@ function toggleItem(itemId) {
 function deleteItem(itemId) {
   const trip = getActiveTrip();
   if (!trip) return;
-  trip.items = trip.items.filter(i => i.id !== itemId);
+  const idx  = trip.items.findIndex(i => i.id === itemId);
+  if (idx === -1) return;
+  const item = trip.items[idx];
+  // Save for potential undo
+  lastDeleted = { item: { ...item }, tripId: trip.id, index: idx };
+  trip.items.splice(idx, 1);
   saveState();
   renderAll();
+  showToastWithUndo(`"${item.name}" removed`, undoDelete);
+}
+
+function undoDelete() {
+  if (!lastDeleted) return;
+  const trip = state.trips.find(t => t.id === lastDeleted.tripId);
+  if (!trip) return;
+  const idx = Math.min(lastDeleted.index, trip.items.length);
+  trip.items.splice(idx, 0, { ...lastDeleted.item });
+  lastDeleted = null;
+  saveState();
+  renderAll();
+  showToast('Item restored');
 }
 
 function setAllChecked(val) {
@@ -675,21 +898,15 @@ function importTrip(code) {
 }
 
 /* ════════════════════════════════════════
-   TOAST
-════════════════════════════════════════ */
-
-function showToast(msg) {
-  const t = document.createElement('div');
-  t.className   = 'toast';
-  t.textContent = msg;
-  document.body.appendChild(t);
-  requestAnimationFrame(() => requestAnimationFrame(() => t.classList.add('visible')));
-  setTimeout(() => { t.classList.remove('visible'); setTimeout(() => t.remove(), 300); }, 2500);
-}
-
-/* ════════════════════════════════════════
    EVENT LISTENERS
 ════════════════════════════════════════ */
+
+// ── Dark mode ──
+$('btn-dark-mode').addEventListener('click', () => {
+  state.darkMode = !state.darkMode;
+  saveState();
+  applyDarkMode();
+});
 
 // ── New trip ──
 function openNewTripModal() {
@@ -701,9 +918,10 @@ function openNewTripModal() {
   } else {
     ptRow.classList.add('hidden');
   }
-  $('modal-trip-title').textContent = 'New Trip';
-  $('modal-trip-confirm').textContent = 'Create';
-  $('trip-name-input').value = '';
+  $('modal-trip-title').textContent    = 'New Trip';
+  $('modal-trip-confirm').textContent  = 'Create';
+  $('trip-name-input').value           = '';
+  $('trip-date-input').value           = '';
   $('template-section').classList.remove('hidden');
   $('modal-trip').dataset.mode = 'new';
   openModal('modal-trip');
@@ -715,15 +933,16 @@ $('btn-start').addEventListener('click',    openNewTripModal);
 $('modal-trip-confirm').addEventListener('click', () => {
   const name = $('trip-name-input').value.trim();
   if (!name) { $('trip-name-input').focus(); return; }
+  const dateVal = $('trip-date-input').value;
   if ($('modal-trip').dataset.mode === 'rename') {
-    renameTrip(name);
+    renameTrip(name, dateVal);
   } else {
     const ptRow = $('personal-templates-row');
     const ptVal = $('personal-template-select').value;
     if (!ptRow.classList.contains('hidden') && ptVal) {
-      createTrip(name, null, ptVal);
+      createTrip(name, null, ptVal, dateVal);
     } else {
-      createTrip(name, $('template-select').value, null);
+      createTrip(name, $('template-select').value, null, dateVal);
     }
   }
   closeModal();
@@ -731,19 +950,35 @@ $('modal-trip-confirm').addEventListener('click', () => {
 
 $('trip-name-input').addEventListener('keydown', e => { if (e.key === 'Enter') $('modal-trip-confirm').click(); });
 
-// ── Rename / delete trip ──
+// ── Rename trip ──
 $('btn-rename-trip').addEventListener('click', () => {
   const trip = getActiveTrip();
   if (!trip) return;
-  $('modal-trip-title').textContent = 'Rename Trip';
+  $('modal-trip-title').textContent   = 'Rename Trip';
   $('modal-trip-confirm').textContent = 'Save';
-  $('trip-name-input').value = trip.name;
+  $('trip-name-input').value          = trip.name;
+  $('trip-date-input').value          = trip.departureDate || '';
   $('template-section').classList.add('hidden');
   $('personal-templates-row').classList.add('hidden');
   $('modal-trip').dataset.mode = 'rename';
   openModal('modal-trip');
 });
 
+// ── Trip date pill ──
+$('btn-trip-date').addEventListener('click', () => {
+  const trip = getActiveTrip();
+  if (!trip) return;
+  $('modal-trip-title').textContent   = 'Trip Date';
+  $('modal-trip-confirm').textContent = 'Save';
+  $('trip-name-input').value          = trip.name;
+  $('trip-date-input').value          = trip.departureDate || '';
+  $('template-section').classList.add('hidden');
+  $('personal-templates-row').classList.add('hidden');
+  $('modal-trip').dataset.mode = 'rename';
+  openModal('modal-trip');
+});
+
+// ── Delete trip ──
 $('btn-delete-trip').addEventListener('click', () => {
   const trip = getActiveTrip();
   if (!trip) return;
@@ -754,6 +989,7 @@ $('btn-delete-trip').addEventListener('click', () => {
 $('trip-select').addEventListener('change', () => {
   state.activeTrip   = $('trip-select').value;
   state.activeMember = 'all';
+  searchQuery        = '';
   saveState();
   renderAll();
 });
@@ -766,7 +1002,7 @@ $('btn-kid-mode').addEventListener('click', () => {
   renderProgress(getActiveTrip());
 });
 
-// ── Add member (delegated, button rendered dynamically) ──
+// ── Add member (delegated) ──
 document.addEventListener('click', e => {
   if (e.target.closest('#btn-add-member')) {
     $('color-picker').innerHTML = MEMBER_COLORS.map((c, i) =>
@@ -777,7 +1013,6 @@ document.addEventListener('click', e => {
     openModal('modal-member');
     return;
   }
-  // Member filter pill
   const pill = e.target.closest('.member-pill[data-member]');
   if (pill && pill.id !== 'btn-add-member') {
     state.activeMember = pill.dataset.member;
@@ -900,7 +1135,6 @@ function openItemEditModal(itemId) {
   const trip     = getActiveTrip();
   const item     = trip.items.find(i => i.id === itemId);
   if (!item) return;
-
   $('edit-item-name').value = item.name;
   $('edit-item-qty').value  = item.qty || 1;
   $('edit-item-note').value = item.note || '';
@@ -927,6 +1161,31 @@ $('modal-item-edit-confirm').addEventListener('click', () => {
   editItemId = null;
 });
 
+// ── Filter bar ──
+$('search-input').addEventListener('input', () => {
+  searchQuery = $('search-input').value;
+  $('btn-clear-search').classList.toggle('hidden', !searchQuery);
+  const trip = getActiveTrip();
+  if (trip) { renderProgress(trip); renderCategories(trip); }
+});
+
+$('btn-clear-search').addEventListener('click', () => {
+  searchQuery = '';
+  $('search-input').value = '';
+  $('btn-clear-search').classList.add('hidden');
+  const trip = getActiveTrip();
+  if (trip) { renderProgress(trip); renderCategories(trip); }
+  $('search-input').focus();
+});
+
+$('btn-show-remaining').addEventListener('click', () => {
+  state.showOnlyRemaining = !state.showOnlyRemaining;
+  saveState();
+  $('btn-show-remaining').classList.toggle('active', state.showOnlyRemaining);
+  const trip = getActiveTrip();
+  if (trip) { renderProgress(trip); renderCategories(trip); }
+});
+
 // ── Comments ──
 $('btn-add-comment').addEventListener('click', () => {
   const text = $('comment-input').value.trim();
@@ -948,7 +1207,7 @@ $('btn-toggle-comments').addEventListener('click', () => {
   $('btn-toggle-comments').textContent = collapsed ? '▸' : '▾';
 });
 
-// ── Modal: close on overlay / cancel / Escape ──
+// ── Modal close ──
 $('modal-overlay').addEventListener('click', e => { if (e.target === $('modal-overlay')) closeModal(); });
 document.querySelectorAll('.modal-cancel').forEach(b => b.addEventListener('click', closeModal));
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && activeModal) closeModal(); });
@@ -961,21 +1220,25 @@ loadState();
 renderSuggestions();
 renderCategorySelect();
 
+// Auto-detect dark mode on first run (when null)
+if (state.darkMode === null || state.darkMode === undefined) {
+  state.darkMode = window.matchMedia?.('(prefers-color-scheme: dark)')?.matches ?? false;
+}
+applyDarkMode();
+
 // Validate active trip
 if (state.activeTrip && !state.trips.find(t => t.id === state.activeTrip)) {
   state.activeTrip = state.trips.length ? state.trips[0].id : null;
 }
 
 // Handle ?trip= URL param (import from share link)
-const urlParams    = new URLSearchParams(location.search);
-const sharedCode   = urlParams.get('trip');
+const urlParams  = new URLSearchParams(location.search);
+const sharedCode = urlParams.get('trip');
 if (sharedCode) {
   try {
     const incoming = decodeTrip(sharedCode);
     const exists   = state.trips.find(t => t.name === incoming.name);
-    if (!exists && confirm(`Import shared trip "${incoming.name}"?`)) {
-      importTrip(sharedCode);
-    }
+    if (!exists && confirm(`Import shared trip "${incoming.name}"?`)) importTrip(sharedCode);
     history.replaceState({}, '', location.pathname);
   } catch (_) {}
 }

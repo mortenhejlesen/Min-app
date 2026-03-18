@@ -14,9 +14,10 @@
       <div class="header-inner">
         <div class="logo">🧳 PackRight</div>
         <div class="header-actions">
-          <button id="btn-kid-mode" class="btn btn-ghost btn-sm" title="Toggle kid-friendly mode">🧒 Kid Mode</button>
-          <button id="btn-import" class="btn btn-ghost btn-sm">Import</button>
-          <button id="btn-new-trip" class="btn btn-primary btn-sm">+ New Trip</button>
+          <button id="btn-dark-mode" class="btn btn-ghost btn-icon" title="Toggle dark mode">🌙</button>
+          <button id="btn-kid-mode"  class="btn btn-ghost btn-sm"  title="Toggle kid-friendly mode">🧒 Kid Mode</button>
+          <button id="btn-import"    class="btn btn-ghost btn-sm">Import</button>
+          <button id="btn-new-trip"  class="btn btn-primary btn-sm">+ New Trip</button>
         </div>
       </div>
     </header>
@@ -26,6 +27,7 @@
       <div class="trip-bar-inner">
         <div class="trip-select-row">
           <select id="trip-select"></select>
+          <button id="btn-trip-date" class="trip-date-pill hidden" title="Set departure date">📅 Set date</button>
           <div class="trip-actions">
             <button id="btn-rename-trip"   class="btn btn-icon" title="Rename trip">✏️</button>
             <button id="btn-save-template" class="btn btn-icon" title="Save as template">💾</button>
@@ -90,6 +92,19 @@
           </div>
         </div>
 
+        <!-- Filter / search bar -->
+        <div class="filter-bar hidden" id="filter-bar">
+          <label class="search-wrapper">
+            <svg class="search-icon" width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M10 10l2.5 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <input id="search-input" type="search" placeholder="Filter items…" autocomplete="off" />
+            <button id="btn-clear-search" class="btn-clear-search hidden" aria-label="Clear search">✕</button>
+          </label>
+          <button id="btn-show-remaining" class="btn btn-ghost btn-xs">Remaining</button>
+        </div>
+
         <!-- Section label -->
         <p class="section-label" id="list-section-label"></p>
 
@@ -127,6 +142,10 @@
       <div class="modal-body">
         <label>Trip name</label>
         <input id="trip-name-input" type="text" placeholder="e.g. Summer vacation 2026" />
+        <div>
+          <label>Departure date <span class="label-optional">(optional)</span></label>
+          <input id="trip-date-input" type="date" />
+        </div>
         <div id="template-section">
           <label>Start from a template</label>
           <select id="template-select">

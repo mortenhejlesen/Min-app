@@ -1117,5 +1117,165 @@ body.kid-mode .category-card { border-left: 3px solid var(--orange); }
 
 @media (max-width: 400px) {
   .logo { font-size: 0.95rem; }
-  .header-actions .btn-ghost { display: none; } /* hide Import on very small screens */
+  .header-actions .btn-ghost { display: none; }
 }
+
+/* ══════════════════════════════════════════════════
+   DARK MODE
+══════════════════════════════════════════════════ */
+html.dark {
+  --bg:            #000000;
+  --surface:       #1c1c1e;
+  --surface-alt:   #2c2c2e;
+  --surface-glass: rgba(0, 0, 0, 0.78);
+
+  --text-primary:   #f5f5f7;
+  --text-secondary: #aeaeb2;
+  --text-tertiary:  #636366;
+
+  --sep:       rgba(255, 255, 255, 0.08);
+  --sep-heavy: rgba(255, 255, 255, 0.15);
+
+  --accent:        #0a84ff;
+  --accent-hover:  #409cff;
+  --accent-active: #0070e8;
+  --accent-ring:   rgba(10, 132, 255, 0.22);
+
+  --green:  #30d158;
+  --red:    #ff453a;
+  --orange: #ff9f0a;
+
+  --shadow-card:  0 1px 3px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.4);
+  --shadow-float: 0 2px 8px rgba(0,0,0,0.4),  0 8px 24px rgba(0,0,0,0.5);
+  --shadow-modal: 0 8px 30px rgba(0,0,0,0.5), 0 24px 64px rgba(0,0,0,0.6);
+}
+
+html.dark .item-checkbox { border-color: #48484a; background: #2c2c2e; }
+html.dark .item-checkbox:hover { border-color: var(--accent); }
+html.dark .item-checkbox.checked { background: var(--green); border-color: var(--green); }
+html.dark .color-swatch.selected { outline-color: #f5f5f7; }
+
+/* Dark mode trip select chevron */
+html.dark #trip-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23636366' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+html.dark select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23636366' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+html.dark #btn-dark-mode { color: var(--yellow); }
+
+/* Dark mode kid mode */
+html.dark body.kid-mode { --bg: #1a1200; }
+
+/* ── Trip date pill ── */
+.trip-date-pill {
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 5px 12px;
+  border-radius: var(--r-pill);
+  border: none;
+  background: var(--surface-alt);
+  color: var(--text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-family: inherit;
+  transition: all var(--dur-fast) var(--ease-out);
+}
+.trip-date-pill:hover   { background: #e5e5ea; color: var(--text-primary); }
+.trip-date-pill:active  { transform: scale(0.96); }
+.trip-date-pill.has-date {
+  background: rgba(0, 113, 227, 0.1);
+  color: var(--accent);
+  font-weight: 600;
+}
+html.dark .trip-date-pill.has-date { background: rgba(10,132,255,0.15); }
+html.dark .trip-date-pill:hover    { background: #3a3a3c; color: var(--text-primary); }
+
+/* ── Filter bar ── */
+.filter-bar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  background: var(--surface);
+  border-radius: var(--r-md);
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow-card);
+}
+
+.search-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--surface-alt);
+  border-radius: var(--r-xs);
+  padding: 6px 10px;
+  cursor: text;
+}
+.search-icon {
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+  display: flex;
+}
+
+.search-wrapper input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 0.87rem;
+  color: var(--text-primary);
+  padding: 0;
+  font-family: inherit;
+  min-width: 0;
+}
+.search-wrapper input:focus { outline: none; box-shadow: none; border: none; }
+.search-wrapper input::placeholder { color: var(--text-tertiary); }
+
+.btn-clear-search {
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  font-size: 0.72rem;
+  padding: 1px 4px;
+  line-height: 1;
+  border-radius: 3px;
+  transition: color var(--dur-fast), background var(--dur-fast);
+}
+.btn-clear-search:hover { color: var(--text-primary); background: var(--sep-heavy); }
+
+#btn-show-remaining         { flex-shrink: 0; }
+#btn-show-remaining.active  { background: var(--accent); color: #fff; }
+
+/* ── Toast with undo ── */
+.toast-undo {
+  background: rgba(255,255,255,0.18);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.82rem;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 2px 9px;
+  border-radius: var(--r-xs);
+  margin-left: 8px;
+  transition: background var(--dur-fast);
+}
+.toast-undo:hover { background: rgba(255,255,255,0.28); }
+
+/* ── Modal label optional hint ── */
+.label-optional {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--text-tertiary);
+  font-size: 0.9em;
+}
+
+/* ── Confetti canvas (rendered by JS, no extra CSS needed) ── */
+
+/* ── Dark mode search focus ── */
+html.dark .search-wrapper input:focus { box-shadow: none; border: none; }
