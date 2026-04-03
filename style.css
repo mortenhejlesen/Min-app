@@ -337,7 +337,8 @@ main {
 .progress-card,
 .add-item-card,
 .category-card,
-.comments-card {
+.comments-card,
+.notes-card {
   background: var(--surface);
   border-radius: var(--r-lg);
   padding: 18px 20px;
@@ -1106,7 +1107,8 @@ body.kid-mode .category-card { border-left: 3px solid var(--orange); }
   .progress-card,
   .add-item-card,
   .category-card,
-  .comments-card { border-radius: var(--r-md); padding: 14px 16px; }
+  .comments-card,
+  .notes-card { border-radius: var(--r-md); padding: 14px 16px; }
 
   .modal         { padding: 22px 18px; border-radius: var(--r-lg); }
   .modal h3      { font-size: 1rem; }
@@ -1279,3 +1281,377 @@ html.dark .trip-date-pill:hover    { background: #3a3a3c; color: var(--text-prim
 
 /* ── Dark mode search focus ── */
 html.dark .search-wrapper input:focus { box-shadow: none; border: none; }
+
+/* ══════════════════════════════════════════════════
+   ICON SYSTEM
+══════════════════════════════════════════════════ */
+.icon {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+  stroke: currentColor;
+}
+.icon-sm { width: 14px; height: 14px; }
+.icon-lg { width: 20px; height: 20px; }
+
+.logo-icon {
+  width: 22px;
+  height: 22px;
+  color: var(--accent);
+  display: block;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Icon-only button ── */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-spring);
+  flex-shrink: 0;
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+.icon-btn:hover  { background: var(--surface-alt); color: var(--text-primary); }
+.icon-btn:active { transform: scale(0.9); }
+.icon-btn.active { color: var(--accent); background: rgba(0,113,227,0.08); }
+
+.icon-btn-sm {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-xs);
+}
+
+/* ── Segmented icon button group ── */
+.icon-btn-group {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface-alt);
+  border-radius: var(--r-sm);
+  padding: 2px;
+  gap: 1px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.icon-btn-group-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 28px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-spring);
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+.icon-btn-group-item:hover {
+  background: var(--surface);
+  color: var(--text-primary);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.icon-btn-group-item:active { transform: scale(0.9); }
+.icon-btn-group-danger:hover { color: var(--red); background: rgba(255,59,48,0.1); }
+
+/* ── Header separator ── */
+.header-sep {
+  width: 1px;
+  height: 18px;
+  background: var(--sep-heavy);
+  margin: 0 2px;
+  flex-shrink: 0;
+}
+
+/* ══════════════════════════════════════════════════
+   PROGRESS CARD (new layout)
+══════════════════════════════════════════════════ */
+.progress-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.progress-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.progress-big-num {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--green);
+  line-height: 1;
+}
+
+.progress-sub {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  letter-spacing: -0.01em;
+}
+
+.progress-btns {
+  display: flex;
+  gap: 4px;
+}
+
+/* ── Text button ── */
+.text-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--accent);
+  font-family: inherit;
+  padding: 4px 10px;
+  border-radius: var(--r-xs);
+  transition: background var(--dur-fast) var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+}
+.text-btn:hover  { background: rgba(0,113,227,0.08); }
+.text-btn:active { opacity: 0.7; }
+
+/* ══════════════════════════════════════════════════
+   NOTES CARD
+══════════════════════════════════════════════════ */
+.notes-card {
+  background: var(--surface);
+  border-radius: var(--r-lg);
+  padding: 16px 20px;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow-card);
+}
+
+.notes-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.notes-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.add-note-row {
+  display: flex;
+  gap: 8px;
+}
+.add-note-row input { flex: 1; }
+
+/* ══════════════════════════════════════════════════
+   MODAL ICON HEADER
+══════════════════════════════════════════════════ */
+.modal-icon-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 20px;
+  text-align: center;
+}
+
+.modal-icon-circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: var(--surface-alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.modal-icon-header h3 { margin-bottom: 0; }
+
+/* ══════════════════════════════════════════════════
+   DATE PILL
+══════════════════════════════════════════════════ */
+.date-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 5px 12px;
+  border-radius: var(--r-pill);
+  border: none;
+  background: var(--surface-alt);
+  color: var(--text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-family: inherit;
+  transition: all var(--dur-fast) var(--ease-out);
+}
+.date-pill:hover  { background: #e5e5ea; color: var(--text-primary); }
+.date-pill:active { transform: scale(0.96); }
+.date-pill.has-date {
+  background: rgba(0, 113, 227, 0.1);
+  color: var(--accent);
+  font-weight: 600;
+}
+html.dark .date-pill.has-date { background: rgba(10,132,255,0.15); }
+html.dark .date-pill:hover    { background: #3a3a3c; color: var(--text-primary); }
+
+/* ══════════════════════════════════════════════════
+   FILTER TOGGLE
+══════════════════════════════════════════════════ */
+.filter-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: var(--r-sm);
+  background: var(--surface-alt);
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all var(--dur-fast) var(--ease-out);
+}
+.filter-toggle:hover  { background: #e5e5ea; color: var(--text-primary); }
+.filter-toggle.active { background: var(--accent); color: #fff; }
+html.dark .filter-toggle:hover { background: #3a3a3c; }
+
+/* ══════════════════════════════════════════════════
+   ADD ITEM (new class names)
+══════════════════════════════════════════════════ */
+.add-item-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.add-icon {
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.add-input {
+  flex: 1;
+  font-size: 0.95rem !important;
+  padding: 10px 14px !important;
+  border-radius: var(--r-sm) !important;
+}
+
+.add-meta-row {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* ══════════════════════════════════════════════════
+   SEARCH WRAP (new class name)
+══════════════════════════════════════════════════ */
+.search-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--surface-alt);
+  border-radius: var(--r-xs);
+  padding: 6px 10px;
+  cursor: text;
+}
+
+.search-icon-svg {
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.search-wrap input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 0.87rem;
+  color: var(--text-primary);
+  padding: 0;
+  font-family: inherit;
+  min-width: 0;
+}
+.search-wrap input:focus       { outline: none; box-shadow: none; border: none; }
+.search-wrap input::placeholder { color: var(--text-tertiary); }
+
+.clear-btn {
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  padding: 1px 4px;
+  border-radius: 3px;
+  transition: color var(--dur-fast), background var(--dur-fast);
+  display: flex;
+  align-items: center;
+}
+.clear-btn:hover { color: var(--text-primary); background: var(--sep-heavy); }
+
+/* ══════════════════════════════════════════════════
+   EMPTY STATE (SVG illustration)
+══════════════════════════════════════════════════ */
+.empty-icon-wrap {
+  margin-bottom: 22px;
+  display: flex;
+  justify-content: center;
+}
+
+.empty-svg {
+  width: 80px;
+  height: 80px;
+  color: var(--text-tertiary);
+  opacity: 0.55;
+}
+
+/* ── Label hint ── */
+.label-hint {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--text-tertiary);
+  font-size: 0.9em;
+}
+
+/* ── Dark mode additions ── */
+html.dark .icon-btn-group       { background: #2c2c2e; }
+html.dark .icon-btn-group-item:hover { background: #3a3a3c; box-shadow: none; }
+html.dark .modal-icon-circle    { background: #2c2c2e; }
+html.dark .search-wrap input:focus { box-shadow: none; border: none; }
+html.dark .text-btn:hover       { background: rgba(10,132,255,0.12); }
+html.dark .notes-card           { box-shadow: var(--shadow-card); }
+html.dark .filter-toggle.active { background: var(--accent); }

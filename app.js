@@ -296,8 +296,9 @@ function decodeTrip(code) {
 
 function applyDarkMode() {
   document.documentElement.classList.toggle('dark', state.darkMode);
-  $('btn-dark-mode').textContent = state.darkMode ? '☀️' : '🌙';
-  $('btn-dark-mode').title = state.darkMode ? 'Switch to light mode' : 'Switch to dark mode';
+  const btn = $('btn-dark-mode');
+  btn.innerHTML = `<svg class="icon"><use href="${state.darkMode ? '#ic-sun' : '#ic-moon'}"/></svg>`;
+  btn.title = state.darkMode ? 'Switch to light mode' : 'Switch to dark mode';
 }
 
 /* ════════════════════════════════════════
@@ -371,25 +372,24 @@ function getCountdownText(dateStr) {
   const dep   = new Date(dateStr); dep.setHours(0,0,0,0);
   const days  = Math.round((dep - today) / 86400000);
   if (days < 0)  return null;
-  if (days === 0) return '✈️ Today!';
-  if (days === 1) return '✈️ Tomorrow!';
-  if (days <= 6)  return `✈️ In ${days} days`;
-  if (days <= 30) return `📅 In ${days} days`;
-  return `📅 ${dep.toLocaleDateString('en-GB', { day:'numeric', month:'short' })}`;
+  if (days === 0) return 'Today!';
+  if (days === 1) return 'Tomorrow!';
+  if (days <= 6)  return `In ${days} days`;
+  if (days <= 30) return `In ${days} days`;
+  return dep.toLocaleDateString('en-GB', { day:'numeric', month:'short' });
 }
 
 function renderTripDate(trip) {
   const btn  = $('btn-trip-date');
   const text = trip.departureDate ? getCountdownText(trip.departureDate) : null;
+  const label = text || 'Set date';
+  btn.innerHTML = `<svg class="icon icon-sm"><use href="#ic-calendar"/></svg><span>${escapeHtml(label)}</span>`;
   if (text) {
-    btn.textContent = text;
     btn.classList.add('has-date');
-    btn.classList.remove('hidden');
   } else {
-    btn.textContent = '📅 Set date';
     btn.classList.remove('has-date');
-    btn.classList.remove('hidden');
   }
+  btn.classList.remove('hidden');
 }
 
 /* ════════════════════════════════════════
@@ -433,13 +433,16 @@ function renderTripSelect() {
 
 function renderMemberFilter(trip) {
   const members = trip.members || [];
-  let html = `<button class="member-pill${state.activeMember === 'all' ? ' active' : ''}" data-member="all">👥 All</button>`;
+  let html = `<button class="member-pill${state.activeMember === 'all' ? ' active' : ''}" data-member="all">
+    <svg class="icon icon-sm"><use href="#ic-users"/></svg> All</button>`;
   members.forEach(m => {
     html += `<button class="member-pill${state.activeMember === m.id ? ' active' : ''}"
       data-member="${m.id}" style="--member-color:${m.color}">
-      ${m.isKid ? '🧒' : '👤'} ${m.name}</button>`;
+      <svg class="icon icon-sm"><use href="${m.isKid ? '#ic-smile' : '#ic-user'}"/></svg>
+      ${escapeHtml(m.name)}</button>`;
   });
-  html += `<button class="member-pill member-add" id="btn-add-member">+ Add member</button>`;
+  html += `<button class="member-pill member-add" id="btn-add-member">
+    <svg class="icon icon-sm"><use href="#ic-user-plus"/></svg> Add</button>`;
   $('member-filter-row').innerHTML = html;
 }
 
@@ -454,7 +457,7 @@ function renderMemberSummary(trip) {
     const pct      = myItems.length === 0 ? 0 : Math.round((checked / myItems.length) * 100);
     const done     = myItems.length > 0 && checked === myItems.length;
     return `<div class="member-card${done ? ' done' : ''}" style="--member-color:${m.color}">
-      <div class="member-card-name">${m.isKid ? '🧒' : '👤'} ${m.name}</div>
+      <div class="member-card-name"><svg class="icon icon-sm" style="vertical-align:-2px"><use href="${m.isKid ? '#ic-smile' : '#ic-user'}"/></svg> ${escapeHtml(m.name)}</div>
       <div class="member-card-progress">
         <div class="member-progress-bar">
           <div class="member-progress-fill" style="width:${pct}%;background:${m.color}"></div>
@@ -473,9 +476,9 @@ function renderProgress(trip) {
   const checked = items.filter(i => i.checked).length;
   const pct     = total === 0 ? 0 : Math.round((checked / total) * 100);
 
-  $('progress-label').textContent = `${checked} of ${total} item${total !== 1 ? 's' : ''} packed`;
+  $('progress-label').textContent  = `${checked} of ${total} item${total !== 1 ? 's' : ''} packed`;
   $('progress-percent').textContent = `${pct}%`;
-  $('progress-bar').style.width = `${pct}%`;
+  $('progress-bar').style.width     = `${pct}%`;
 
   // Kid stars
   if (state.kidMode) {
@@ -521,7 +524,7 @@ function renderCategories(trip) {
         <span class="category-title">${cat.label}
           <span class="category-count">${checkedCount}/${catItems.length}</span>
         </span>
-        <span class="category-toggle">▾</span>
+        <svg class="icon category-toggle"><use href="#ic-chevron-down"/></svg>
       </div>
       <ul class="category-items"></ul>`;
 
@@ -548,15 +551,15 @@ function buildItemRow(item, trip) {
   const member   = item.assignedTo !== 'all' ? getMember(trip, item.assignedTo) : null;
   const qtySpan  = (item.qty && item.qty > 1) ? `<span class="item-qty">×${item.qty}</span>` : '';
   const badge    = member ? `<span class="member-badge" style="background:${member.color}" title="${member.name}">${member.name[0].toUpperCase()}</span>` : '';
-  const noteIcon = item.note ? `<span class="note-icon" title="${escapeHtml(item.note)}">📝</span>` : '';
+  const noteIcon = item.note ? `<span class="note-icon" title="${escapeHtml(item.note)}"><svg class="icon icon-sm"><use href="#ic-note"/></svg></span>` : '';
 
   li.innerHTML = `
     <span class="drag-handle"></span>
     <div class="item-checkbox${item.checked ? ' checked' : ''}" data-id="${item.id}"></div>
     <span class="item-label${item.checked ? ' checked' : ''}">${escapeHtml(item.name)}${qtySpan}</span>
     ${badge}${noteIcon}
-    <button class="item-edit"   data-id="${item.id}" title="Edit">✏️</button>
-    <button class="item-delete" data-id="${item.id}" title="Remove">✕</button>`;
+    <button class="item-edit"   data-id="${item.id}" title="Edit"><svg class="icon icon-sm"><use href="#ic-pencil"/></svg></button>
+    <button class="item-delete" data-id="${item.id}" title="Remove"><svg class="icon icon-sm"><use href="#ic-x"/></svg></button>`;
 
   li.addEventListener('dragstart', handleDragStart);
   li.addEventListener('dragover',  handleDragOver);
@@ -1204,7 +1207,8 @@ $('comments-list').addEventListener('click', e => {
 $('btn-toggle-comments').addEventListener('click', () => {
   const body      = $('comments-body');
   const collapsed = body.classList.toggle('hidden');
-  $('btn-toggle-comments').textContent = collapsed ? '▸' : '▾';
+  const use = $('btn-toggle-comments').querySelector('use');
+  if (use) use.setAttribute('href', collapsed ? '#ic-chevron-right' : '#ic-chevron-down');
 });
 
 // ── Modal close ──

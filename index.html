@@ -7,260 +7,438 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div id="app">
 
-    <!-- ── Header ── -->
-    <header>
-      <div class="header-inner">
-        <div class="logo">🧳 PackRight</div>
-        <div class="header-actions">
-          <button id="btn-dark-mode" class="btn btn-ghost btn-icon" title="Toggle dark mode">🌙</button>
-          <button id="btn-kid-mode"  class="btn btn-ghost btn-sm"  title="Toggle kid-friendly mode">🧒 Kid Mode</button>
-          <button id="btn-import"    class="btn btn-ghost btn-sm">Import</button>
-          <button id="btn-new-trip"  class="btn btn-primary btn-sm">+ New Trip</button>
-        </div>
+<!-- ══════════════════════════════════════
+     ICON SYSTEM  (stroke, 16×16, 1.5px)
+══════════════════════════════════════ -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <symbol id="ic-moon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M13 8.8A5.5 5.5 0 0 1 6.2 2 5.5 5.5 0 1 0 13 8.8Z"/>
+  </symbol>
+  <symbol id="ic-sun" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="8" cy="8" r="2.5"/>
+    <path d="M8 1.5V3M8 13v1.5M1.5 8H3M13 8h1.5M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M12.6 3.4l-1.1 1.1M4.5 11.5l-1.1 1.1"/>
+  </symbol>
+  <symbol id="ic-smile" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="8" cy="8" r="6"/>
+    <path d="M5.5 9.5s.8 1.5 2.5 1.5 2.5-1.5 2.5-1.5"/>
+    <circle cx="6" cy="6.5" r=".6" fill="currentColor" stroke="none"/>
+    <circle cx="10" cy="6.5" r=".6" fill="currentColor" stroke="none"/>
+  </symbol>
+  <symbol id="ic-download" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 2v8M5.5 7.5 8 10l2.5-2.5"/>
+    <path d="M2.5 12v1a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5v-1"/>
+  </symbol>
+  <symbol id="ic-plus" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+    <path d="M8 3v10M3 8h10"/>
+  </symbol>
+  <symbol id="ic-pencil" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11.5 2.5 13.5 4.5 5 13H3v-2L11.5 2.5Z"/>
+    <path d="M9.5 4.5 11.5 6.5"/>
+  </symbol>
+  <symbol id="ic-bookmark" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 2h8v11.5l-4-2.5-4 2.5V2Z"/>
+  </symbol>
+  <symbol id="ic-share" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5.5 4H4a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1h-1.5"/>
+    <path d="M8 1.5V9M5.5 4 8 1.5 10.5 4"/>
+  </symbol>
+  <symbol id="ic-trash" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2.5 4.5h11M6 4.5V3.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5v1M6.5 7.5v4M9.5 7.5v4M3.5 4.5l.8 8a1 1 0 0 0 1 .9h5.4a1 1 0 0 0 1-.9l.8-8"/>
+  </symbol>
+  <symbol id="ic-search" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="7" cy="7" r="4"/>
+    <path d="M10 10l3 3"/>
+  </symbol>
+  <symbol id="ic-x" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+    <path d="M4 4l8 8M12 4 4 12"/>
+  </symbol>
+  <symbol id="ic-chevron-down" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 6l4 4 4-4"/>
+  </symbol>
+  <symbol id="ic-chevron-right" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6 4l4 4-4 4"/>
+  </symbol>
+  <symbol id="ic-note" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 2H4.5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V6.5Z"/>
+    <path d="M9 2v4.5h4.5"/>
+    <path d="M5.5 7h2.5M5.5 9.5h5"/>
+  </symbol>
+  <symbol id="ic-calendar" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="3" width="12" height="11" rx="1.5"/>
+    <path d="M2 7h12M5.5 1.5V4M10.5 1.5V4"/>
+  </symbol>
+  <symbol id="ic-user" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="8" cy="5.5" r="2.5"/>
+    <path d="M2.5 14c0-2.8 2.5-4.5 5.5-4.5s5.5 1.7 5.5 4.5"/>
+  </symbol>
+  <symbol id="ic-users" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="6" cy="5.5" r="2"/>
+    <path d="M1.5 14c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/>
+    <path d="M11 3.5a2 2 0 0 1 0 4M14.5 14c0-2-1.5-3.5-3.5-4"/>
+  </symbol>
+  <symbol id="ic-user-plus" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="6.5" cy="5.5" r="2.5"/>
+    <path d="M1.5 14c0-2.5 2-4 5-4s5 1.5 5 4"/>
+    <path d="M12 8v5M9.5 10.5h5"/>
+  </symbol>
+  <symbol id="ic-filter" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+    <path d="M2 4.5h12M5 8h6M7 11.5h2"/>
+  </symbol>
+  <symbol id="ic-check-circle" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="8" cy="8" r="6"/>
+    <path d="M5 8l2 2 4-4"/>
+  </symbol>
+  <symbol id="ic-suitcase" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="1.5" y="5.5" width="13" height="8.5" rx="1.5"/>
+    <path d="M5.5 5.5V4a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1.5"/>
+    <path d="M1.5 9.5h13"/>
+  </symbol>
+  <symbol id="ic-dots" viewBox="0 0 16 16" fill="currentColor" stroke="none">
+    <circle cx="5" cy="5" r="1.3"/>
+    <circle cx="5" cy="8" r="1.3"/>
+    <circle cx="5" cy="11" r="1.3"/>
+    <circle cx="11" cy="5" r="1.3"/>
+    <circle cx="11" cy="8" r="1.3"/>
+    <circle cx="11" cy="11" r="1.3"/>
+  </symbol>
+</svg>
+
+<!-- ══════════════════════════════════════
+     APP SHELL
+══════════════════════════════════════ -->
+<div id="app">
+
+  <!-- ── Header ── -->
+  <header>
+    <div class="header-inner">
+      <div class="logo">
+        <svg class="logo-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="7" width="16" height="11" rx="2"/>
+          <path d="M6.5 7V5.5A1.5 1.5 0 0 1 8 4h4a1.5 1.5 0 0 1 1.5 1.5V7"/>
+          <path d="M2 11.5h16"/>
+        </svg>
+        <span>PackRight</span>
       </div>
-    </header>
-
-    <!-- ── Trip bar ── -->
-    <div id="trip-bar" class="trip-bar hidden">
-      <div class="trip-bar-inner">
-        <div class="trip-select-row">
-          <select id="trip-select"></select>
-          <button id="btn-trip-date" class="trip-date-pill hidden" title="Set departure date">📅 Set date</button>
-          <div class="trip-actions">
-            <button id="btn-rename-trip"   class="btn btn-icon" title="Rename trip">✏️</button>
-            <button id="btn-save-template" class="btn btn-icon" title="Save as template">💾</button>
-            <button id="btn-share-trip"    class="btn btn-icon" title="Share trip">🔗</button>
-            <button id="btn-delete-trip"   class="btn btn-icon btn-danger" title="Delete trip">🗑️</button>
-          </div>
-        </div>
-        <div id="member-filter-row" class="member-filter-row"></div>
-      </div>
-    </div>
-
-    <!-- ── Main ── -->
-    <main id="main-content">
-
-      <!-- Empty state -->
-      <div id="empty-state" class="empty-state">
-        <div class="empty-illustration">🧳</div>
-        <h2>No trips yet</h2>
-        <p>Create your first trip to start building your perfect packing list.</p>
-        <button class="btn btn-primary btn-large" id="btn-start">Create a Trip</button>
-      </div>
-
-      <!-- Trip view -->
-      <div id="trip-view" class="hidden">
-
-        <!-- Member progress summary -->
-        <div id="member-summary" class="member-summary hidden"></div>
-
-        <!-- Overall progress -->
-        <div class="progress-card">
-          <div class="progress-header">
-            <div class="progress-text">
-              <p id="progress-label" class="progress-label">0 of 0 items packed</p>
-            </div>
-            <span id="progress-percent" class="progress-percent">0%</span>
-          </div>
-          <div class="progress-track">
-            <div id="progress-bar" class="progress-fill"></div>
-          </div>
-          <div id="kid-stars" class="kid-stars hidden"></div>
-          <div class="progress-footer">
-            <button id="btn-uncheck-all" class="btn btn-ghost btn-xs">Clear all</button>
-            <button id="btn-check-all"   class="btn btn-ghost btn-xs">Check all</button>
-          </div>
-        </div>
-
-        <!-- Add item -->
-        <div class="add-item-card">
-          <div class="add-item-primary">
-            <input id="new-item-input" type="text" placeholder="Add an item to your list…" autocomplete="off" list="suggestions-list" class="add-item-input" />
-            <datalist id="suggestions-list"></datalist>
-            <button id="btn-add-item" class="btn btn-primary">Add</button>
-          </div>
-          <div class="add-item-meta">
-            <select id="new-item-category" class="meta-select"></select>
-            <select id="new-item-assignee" class="meta-select"></select>
-            <div class="qty-group">
-              <label for="new-item-qty" class="qty-label">Qty</label>
-              <input id="new-item-qty" type="number" min="1" max="99" value="1" class="qty-input" />
-            </div>
-            <input id="new-item-note" type="text" placeholder="Note…" class="note-input" />
-          </div>
-        </div>
-
-        <!-- Filter / search bar -->
-        <div class="filter-bar hidden" id="filter-bar">
-          <label class="search-wrapper">
-            <svg class="search-icon" width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.5"/>
-              <path d="M10 10l2.5 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-            <input id="search-input" type="search" placeholder="Filter items…" autocomplete="off" />
-            <button id="btn-clear-search" class="btn-clear-search hidden" aria-label="Clear search">✕</button>
-          </label>
-          <button id="btn-show-remaining" class="btn btn-ghost btn-xs">Remaining</button>
-        </div>
-
-        <!-- Section label -->
-        <p class="section-label" id="list-section-label"></p>
-
-        <!-- Packing categories -->
-        <div id="categories-container"></div>
-
-        <!-- Trip notes -->
-        <div class="comments-card">
-          <div class="comments-header">
-            <span class="section-label-inline">Trip Notes</span>
-            <button id="btn-toggle-comments" class="btn btn-icon btn-sm">▾</button>
-          </div>
-          <div id="comments-body">
-            <ul id="comments-list" class="comments-list"></ul>
-            <div class="add-comment-row">
-              <input id="comment-input" type="text" placeholder="Add a reminder or note for the trip…" />
-              <select id="comment-author" class="meta-select"></select>
-              <button id="btn-add-comment" class="btn btn-primary btn-sm">Add</button>
-            </div>
-          </div>
-        </div>
-
-      </div><!-- /trip-view -->
-    </main>
-  </div><!-- /app -->
-
-  <!-- ══════════════════════════════════════
-       MODALS
-  ══════════════════════════════════════ -->
-  <div id="modal-overlay" class="modal-overlay hidden">
-
-    <!-- Create / Rename trip -->
-    <div class="modal hidden" id="modal-trip">
-      <h3 id="modal-trip-title">New Trip</h3>
-      <div class="modal-body">
-        <label>Trip name</label>
-        <input id="trip-name-input" type="text" placeholder="e.g. Summer vacation 2026" />
-        <div>
-          <label>Departure date <span class="label-optional">(optional)</span></label>
-          <input id="trip-date-input" type="date" />
-        </div>
-        <div id="template-section">
-          <label>Start from a template</label>
-          <select id="template-select">
-            <option value="blank">Blank list</option>
-            <option value="beach">🏖️ Beach holiday</option>
-            <option value="business">💼 Business trip</option>
-            <option value="winter">⛷️ Winter / Ski trip</option>
-            <option value="camping">🏕️ Camping</option>
-            <option value="weekend">🏙️ Weekend getaway</option>
-            <option value="baby">👶 Baby trip</option>
-            <option value="toddler">🧒 Toddler trip</option>
-            <option value="school_trip">🏫 School trip</option>
-            <option value="sports_camp">⚽ Sports camp</option>
-          </select>
-          <div id="personal-templates-row" class="hidden">
-            <label>My saved templates</label>
-            <select id="personal-template-select"></select>
-          </div>
-        </div>
-      </div>
-      <div class="modal-actions">
-        <button class="btn btn-ghost modal-cancel">Cancel</button>
-        <button id="modal-trip-confirm" class="btn btn-primary">Create</button>
+      <div class="header-actions">
+        <button id="btn-dark-mode" class="icon-btn" title="Toggle dark mode">
+          <svg class="icon"><use href="#ic-moon"/></svg>
+        </button>
+        <button id="btn-kid-mode"  class="icon-btn" title="Toggle kid-friendly mode">
+          <svg class="icon"><use href="#ic-smile"/></svg>
+        </button>
+        <button id="btn-import"    class="icon-btn" title="Import trip">
+          <svg class="icon"><use href="#ic-download"/></svg>
+        </button>
+        <div class="header-sep"></div>
+        <button id="btn-new-trip"  class="btn btn-primary btn-sm">
+          <svg class="icon"><use href="#ic-plus"/></svg>
+          New Trip
+        </button>
       </div>
     </div>
+  </header>
 
-    <!-- Add family member -->
-    <div class="modal hidden" id="modal-member">
-      <h3>Add Family Member</h3>
-      <div class="modal-body">
-        <label>Name</label>
-        <input id="member-name-input" type="text" placeholder="e.g. Emma" />
-        <label>Colour</label>
-        <div id="color-picker" class="color-picker"></div>
-        <label class="checkbox-label">
-          <input type="checkbox" id="member-is-kid" /> This is a child 🧒
+  <!-- ── Trip bar ── -->
+  <div id="trip-bar" class="trip-bar hidden">
+    <div class="trip-bar-inner">
+      <div class="trip-select-row">
+        <select id="trip-select"></select>
+        <button id="btn-trip-date" class="date-pill hidden">
+          <svg class="icon icon-sm"><use href="#ic-calendar"/></svg>
+          <span id="trip-date-text">Set date</span>
+        </button>
+        <div class="icon-btn-group">
+          <button id="btn-rename-trip"   class="icon-btn-group-item" title="Rename trip">
+            <svg class="icon"><use href="#ic-pencil"/></svg>
+          </button>
+          <button id="btn-save-template" class="icon-btn-group-item" title="Save as template">
+            <svg class="icon"><use href="#ic-bookmark"/></svg>
+          </button>
+          <button id="btn-share-trip"    class="icon-btn-group-item" title="Share trip">
+            <svg class="icon"><use href="#ic-share"/></svg>
+          </button>
+          <button id="btn-delete-trip"   class="icon-btn-group-item icon-btn-group-danger" title="Delete trip">
+            <svg class="icon"><use href="#ic-trash"/></svg>
+          </button>
+        </div>
+      </div>
+      <div id="member-filter-row" class="member-filter-row"></div>
+    </div>
+  </div>
+
+  <!-- ── Main ── -->
+  <main id="main-content">
+
+    <!-- Empty state -->
+    <div id="empty-state" class="empty-state">
+      <div class="empty-icon-wrap">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="empty-svg">
+          <rect x="6" y="22" width="52" height="36" rx="6" stroke-width="3"/>
+          <path d="M21 22V17a5 5 0 0 1 5-5h12a5 5 0 0 1 5 5v5" stroke-width="3"/>
+          <path d="M6 36h52" stroke-width="3"/>
+          <path d="M26 36v6" stroke-width="3"/>
+          <path d="M38 36v6" stroke-width="3"/>
+        </svg>
+      </div>
+      <h2>No trips yet</h2>
+      <p>Create your first trip to start building a packing list.</p>
+      <button class="btn btn-primary btn-large" id="btn-start">
+        <svg class="icon"><use href="#ic-plus"/></svg>
+        Create a Trip
+      </button>
+    </div>
+
+    <!-- Trip view -->
+    <div id="trip-view" class="hidden">
+
+      <!-- Member cards -->
+      <div id="member-summary" class="member-summary hidden"></div>
+
+      <!-- Progress -->
+      <div class="progress-card">
+        <div class="progress-main">
+          <div class="progress-stat">
+            <span id="progress-percent" class="progress-big-num">0%</span>
+            <span id="progress-label"  class="progress-sub">0 of 0 items packed</span>
+          </div>
+          <div class="progress-btns">
+            <button id="btn-uncheck-all" class="text-btn">Clear</button>
+            <button id="btn-check-all"   class="text-btn">All</button>
+          </div>
+        </div>
+        <div class="progress-track">
+          <div id="progress-bar" class="progress-fill"></div>
+        </div>
+        <div id="kid-stars" class="kid-stars hidden"></div>
+      </div>
+
+      <!-- Add item -->
+      <div class="add-item-card">
+        <div class="add-item-row">
+          <svg class="icon add-icon"><use href="#ic-plus"/></svg>
+          <input id="new-item-input" type="text" placeholder="Add an item to your list…"
+                 autocomplete="off" list="suggestions-list" class="add-input" />
+          <datalist id="suggestions-list"></datalist>
+          <button id="btn-add-item" class="btn btn-primary btn-sm">Add</button>
+        </div>
+        <div class="add-meta-row">
+          <select id="new-item-category" class="meta-select"></select>
+          <select id="new-item-assignee" class="meta-select"></select>
+          <div class="qty-group">
+            <span class="qty-label">Qty</span>
+            <input id="new-item-qty" type="number" min="1" max="99" value="1" class="qty-input" />
+          </div>
+          <input id="new-item-note" type="text" placeholder="Note…" class="note-input" />
+        </div>
+      </div>
+
+      <!-- Filter bar -->
+      <div class="filter-bar hidden" id="filter-bar">
+        <label class="search-wrap">
+          <svg class="icon icon-sm search-icon-svg"><use href="#ic-search"/></svg>
+          <input id="search-input" type="search" placeholder="Filter items…" autocomplete="off" />
+          <button id="btn-clear-search" class="clear-btn hidden" aria-label="Clear">
+            <svg class="icon icon-sm"><use href="#ic-x"/></svg>
+          </button>
         </label>
+        <button id="btn-show-remaining" class="filter-toggle">
+          <svg class="icon icon-sm"><use href="#ic-filter"/></svg>
+          Remaining
+        </button>
       </div>
-      <div class="modal-actions">
-        <button class="btn btn-ghost modal-cancel">Cancel</button>
-        <button id="modal-member-confirm" class="btn btn-primary">Add Member</button>
+
+      <!-- Section label -->
+      <p class="section-label" id="list-section-label"></p>
+
+      <!-- Packing list -->
+      <div id="categories-container"></div>
+
+      <!-- Trip notes -->
+      <div class="notes-card">
+        <div class="notes-header">
+          <div class="notes-title">
+            <svg class="icon"><use href="#ic-note"/></svg>
+            <span class="section-label-inline">Trip Notes</span>
+          </div>
+          <button id="btn-toggle-comments" class="icon-btn icon-btn-sm">
+            <svg class="icon"><use href="#ic-chevron-down"/></svg>
+          </button>
+        </div>
+        <div id="comments-body">
+          <ul id="comments-list" class="comments-list"></ul>
+          <div class="add-note-row">
+            <input id="comment-input" type="text" placeholder="Add a note or reminder…" />
+            <select id="comment-author" class="meta-select"></select>
+            <button id="btn-add-comment" class="btn btn-primary btn-sm">Add</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /trip-view -->
+  </main>
+</div><!-- /app -->
+
+<!-- ══════════════════════════════════════
+     MODALS
+══════════════════════════════════════ -->
+<div id="modal-overlay" class="modal-overlay hidden">
+
+  <!-- Create / Rename trip -->
+  <div class="modal hidden" id="modal-trip">
+    <div class="modal-icon-header">
+      <div class="modal-icon-circle">
+        <svg class="icon icon-lg"><use href="#ic-suitcase"/></svg>
+      </div>
+      <h3 id="modal-trip-title">New Trip</h3>
+    </div>
+    <div class="modal-body">
+      <label>Trip name</label>
+      <input id="trip-name-input" type="text" placeholder="e.g. Summer vacation 2026" />
+      <div>
+        <label>Departure date <span class="label-hint">(optional)</span></label>
+        <input id="trip-date-input" type="date" />
+      </div>
+      <div id="template-section">
+        <label>Start from a template</label>
+        <select id="template-select">
+          <option value="blank">Blank list</option>
+          <option value="beach">Beach holiday</option>
+          <option value="business">Business trip</option>
+          <option value="winter">Winter / Ski trip</option>
+          <option value="camping">Camping</option>
+          <option value="weekend">Weekend getaway</option>
+          <option value="baby">Baby trip</option>
+          <option value="toddler">Toddler trip</option>
+          <option value="school_trip">School trip</option>
+          <option value="sports_camp">Sports camp</option>
+        </select>
+        <div id="personal-templates-row" class="hidden">
+          <label>My saved templates</label>
+          <select id="personal-template-select"></select>
+        </div>
       </div>
     </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost modal-cancel">Cancel</button>
+      <button id="modal-trip-confirm" class="btn btn-primary">Create</button>
+    </div>
+  </div>
 
-    <!-- Share trip -->
-    <div class="modal hidden" id="modal-share">
+  <!-- Add family member -->
+  <div class="modal hidden" id="modal-member">
+    <div class="modal-icon-header">
+      <div class="modal-icon-circle">
+        <svg class="icon icon-lg"><use href="#ic-user-plus"/></svg>
+      </div>
+      <h3>Add Family Member</h3>
+    </div>
+    <div class="modal-body">
+      <label>Name</label>
+      <input id="member-name-input" type="text" placeholder="e.g. Emma" />
+      <label>Colour</label>
+      <div id="color-picker" class="color-picker"></div>
+      <label class="checkbox-label">
+        <input type="checkbox" id="member-is-kid" /> This is a child
+      </label>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost modal-cancel">Cancel</button>
+      <button id="modal-member-confirm" class="btn btn-primary">Add Member</button>
+    </div>
+  </div>
+
+  <!-- Share trip -->
+  <div class="modal hidden" id="modal-share">
+    <div class="modal-icon-header">
+      <div class="modal-icon-circle">
+        <svg class="icon icon-lg"><use href="#ic-share"/></svg>
+      </div>
       <h3>Share Trip</h3>
-      <div class="modal-body">
-        <p class="modal-desc">Send this link or code to your family so they can open the trip on their own device.</p>
-        <label>Share link</label>
-        <div class="copy-row">
-          <input id="share-link-input" type="text" readonly />
-          <button id="btn-copy-link" class="btn btn-primary btn-sm">Copy</button>
-        </div>
-        <label>Share code</label>
-        <div class="copy-row">
-          <input id="share-code-input" type="text" readonly />
-          <button id="btn-copy-code" class="btn btn-ghost btn-sm">Copy</button>
-        </div>
+    </div>
+    <div class="modal-body">
+      <p class="modal-desc">Send this link or code to your family so they can open the trip on their own device.</p>
+      <label>Share link</label>
+      <div class="copy-row">
+        <input id="share-link-input" type="text" readonly />
+        <button id="btn-copy-link" class="btn btn-primary btn-sm">Copy</button>
       </div>
-      <div class="modal-actions">
-        <button class="btn btn-ghost modal-cancel">Close</button>
+      <label>Share code</label>
+      <div class="copy-row">
+        <input id="share-code-input" type="text" readonly />
+        <button id="btn-copy-code" class="btn btn-ghost btn-sm">Copy</button>
       </div>
     </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost modal-cancel">Close</button>
+    </div>
+  </div>
 
-    <!-- Import trip -->
-    <div class="modal hidden" id="modal-import">
+  <!-- Import trip -->
+  <div class="modal hidden" id="modal-import">
+    <div class="modal-icon-header">
+      <div class="modal-icon-circle">
+        <svg class="icon icon-lg"><use href="#ic-download"/></svg>
+      </div>
       <h3>Import Trip</h3>
-      <div class="modal-body">
-        <label>Paste a share code</label>
-        <input id="import-code-input" type="text" placeholder="Paste code here…" />
-        <p id="import-error" class="error-text hidden">Invalid code — please check and try again.</p>
-      </div>
-      <div class="modal-actions">
-        <button class="btn btn-ghost modal-cancel">Cancel</button>
-        <button id="modal-import-confirm" class="btn btn-primary">Import</button>
-      </div>
     </div>
+    <div class="modal-body">
+      <label>Paste a share code</label>
+      <input id="import-code-input" type="text" placeholder="Paste code here…" />
+      <p id="import-error" class="error-text hidden">Invalid code — please check and try again.</p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost modal-cancel">Cancel</button>
+      <button id="modal-import-confirm" class="btn btn-primary">Import</button>
+    </div>
+  </div>
 
-    <!-- Save as template -->
-    <div class="modal hidden" id="modal-save-template">
+  <!-- Save as template -->
+  <div class="modal hidden" id="modal-save-template">
+    <div class="modal-icon-header">
+      <div class="modal-icon-circle">
+        <svg class="icon icon-lg"><use href="#ic-bookmark"/></svg>
+      </div>
       <h3>Save as Template</h3>
-      <div class="modal-body">
-        <label>Template name</label>
-        <input id="template-name-input" type="text" placeholder="e.g. Our Mallorca setup" />
-      </div>
-      <div class="modal-actions">
-        <button class="btn btn-ghost modal-cancel">Cancel</button>
-        <button id="modal-save-template-confirm" class="btn btn-primary">Save Template</button>
-      </div>
     </div>
+    <div class="modal-body">
+      <label>Template name</label>
+      <input id="template-name-input" type="text" placeholder="e.g. Our Mallorca setup" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost modal-cancel">Cancel</button>
+      <button id="modal-save-template-confirm" class="btn btn-primary">Save Template</button>
+    </div>
+  </div>
 
-    <!-- Edit item -->
-    <div class="modal hidden" id="modal-item-edit">
+  <!-- Edit item -->
+  <div class="modal hidden" id="modal-item-edit">
+    <div class="modal-icon-header">
+      <div class="modal-icon-circle">
+        <svg class="icon icon-lg"><use href="#ic-pencil"/></svg>
+      </div>
       <h3>Edit Item</h3>
-      <div class="modal-body">
-        <label>Name</label>
-        <input id="edit-item-name" type="text" />
-        <label>Quantity</label>
-        <input id="edit-item-qty" type="number" min="1" max="99" value="1" />
-        <label>Note</label>
-        <input id="edit-item-note" type="text" placeholder="Optional note…" />
-        <label>Category</label>
-        <select id="edit-item-cat"></select>
-        <label>Assigned to</label>
-        <select id="edit-item-assignee"></select>
-      </div>
-      <div class="modal-actions">
-        <button class="btn btn-ghost modal-cancel">Cancel</button>
-        <button id="modal-item-edit-confirm" class="btn btn-primary">Save Changes</button>
-      </div>
     </div>
+    <div class="modal-body">
+      <label>Name</label>
+      <input id="edit-item-name" type="text" />
+      <label>Quantity</label>
+      <input id="edit-item-qty" type="number" min="1" max="99" value="1" />
+      <label>Note</label>
+      <input id="edit-item-note" type="text" placeholder="Optional note…" />
+      <label>Category</label>
+      <select id="edit-item-cat"></select>
+      <label>Assigned to</label>
+      <select id="edit-item-assignee"></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost modal-cancel">Cancel</button>
+      <button id="modal-item-edit-confirm" class="btn btn-primary">Save Changes</button>
+    </div>
+  </div>
 
-  </div><!-- /modal-overlay -->
+</div><!-- /modal-overlay -->
 
-  <script src="app.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
