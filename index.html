@@ -299,8 +299,18 @@
         <label>Departure date <span class="label-hint">(optional)</span></label>
         <input id="trip-date-input" type="date" />
       </div>
+
+      <!-- Travelers (new trip only) -->
+      <div id="travelers-section" class="hidden">
+        <label>Who's traveling?</label>
+        <div id="travelers-list" class="travelers-list"></div>
+        <button type="button" id="btn-add-traveler" class="add-traveler-btn">
+          <svg class="icon icon-sm"><use href="#ic-user-plus"/></svg> Add person
+        </button>
+      </div>
+
       <div id="template-section">
-        <label>Start from a template</label>
+        <label>Trip type</label>
         <select id="template-select">
           <option value="blank">Blank list</option>
           <option value="beach">Beach holiday</option>
@@ -313,6 +323,12 @@
           <option value="school_trip">School trip</option>
           <option value="sports_camp">Sports camp</option>
         </select>
+        <label>Trip duration</label>
+        <div class="duration-pills" id="duration-select">
+          <button class="duration-pill" data-duration="short" type="button">Few days (1–3)</button>
+          <button class="duration-pill active" data-duration="week" type="button">A week (4–7)</button>
+          <button class="duration-pill" data-duration="long" type="button">2+ weeks</button>
+        </div>
         <div id="personal-templates-row" class="hidden">
           <label>My saved templates</label>
           <select id="personal-template-select"></select>
@@ -336,11 +352,15 @@
     <div class="modal-body">
       <label>Name</label>
       <input id="member-name-input" type="text" placeholder="e.g. Emma" />
+      <label>Profile</label>
+      <div class="profile-pills" id="member-profile-pills">
+        <button class="profile-pill active" data-profile="man"   type="button">Man</button>
+        <button class="profile-pill"        data-profile="woman" type="button">Woman</button>
+        <button class="profile-pill"        data-profile="girl"  type="button">Girl</button>
+        <button class="profile-pill"        data-profile="boy"   type="button">Boy</button>
+      </div>
       <label>Colour</label>
       <div id="color-picker" class="color-picker"></div>
-      <label class="checkbox-label">
-        <input type="checkbox" id="member-is-kid" /> This is a child
-      </label>
     </div>
     <div class="modal-actions">
       <button class="btn btn-ghost modal-cancel">Cancel</button>

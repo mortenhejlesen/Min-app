@@ -54,155 +54,554 @@ const SUGGESTIONS = [
   'Beach towel','Microfibre towel','Multi-tool','Torch',
 ];
 
-const TEMPLATES = {
-  blank: [],
 
-  beach: [
-    {cat:'clothes',    name:'Swimsuit'},{cat:'clothes',    name:'T-shirts (×5)'},
-    {cat:'clothes',    name:'Shorts (×3)'},{cat:'clothes',    name:'Flip flops'},
-    {cat:'clothes',    name:'Sunglasses'},{cat:'clothes',    name:'Sun hat'},
-    {cat:'clothes',    name:'Light jacket'},
-    {cat:'toiletries', name:'Sunscreen SPF 50+'},{cat:'toiletries', name:'After-sun lotion'},
-    {cat:'toiletries', name:'Toothbrush & toothpaste'},{cat:'toiletries', name:'Shampoo & conditioner'},
-    {cat:'toiletries', name:'Deodorant'},{cat:'toiletries', name:'Insect repellent'},
-    {cat:'electronics',name:'Phone charger'},{cat:'electronics',name:'Power bank'},
-    {cat:'electronics',name:'Camera'},{cat:'electronics',name:'Headphones'},
-    {cat:'documents',  name:'Passport'},{cat:'documents',  name:'Travel insurance'},
-    {cat:'documents',  name:'Hotel booking'},{cat:'documents',  name:'Flight tickets'},
-    {cat:'health',     name:'Painkillers'},{cat:'health',     name:'Antihistamine'},
-    {cat:'misc',       name:'Beach towel'},{cat:'misc',       name:'Reusable water bottle'},
-    {cat:'misc',       name:'Book / e-reader'},
-  ],
+/* ════════════════════════════════════════
+   TEMPLATE BUILDER  (profile × duration)
+════════════════════════════════════════ */
 
-  business: [
-    {cat:'clothes',    name:'Dress shirts (×3)'},{cat:'clothes',    name:'Trousers (×2)'},
-    {cat:'clothes',    name:'Suit jacket'},{cat:'clothes',    name:'Tie / accessories'},
-    {cat:'clothes',    name:'Formal shoes'},{cat:'clothes',    name:'Casual outfit'},
-    {cat:'clothes',    name:'Socks & underwear'},
-    {cat:'toiletries', name:'Toothbrush & toothpaste'},{cat:'toiletries', name:'Deodorant'},
-    {cat:'toiletries', name:'Razor / shaving kit'},{cat:'toiletries', name:'Shampoo'},
-    {cat:'electronics',name:'Laptop & charger'},{cat:'electronics',name:'Phone charger'},
-    {cat:'electronics',name:'Universal adapter'},{cat:'electronics',name:'Earbuds'},
-    {cat:'documents',  name:'Passport / ID'},{cat:'documents',  name:'Business cards'},
-    {cat:'documents',  name:'Meeting agenda'},{cat:'documents',  name:'Hotel booking'},
-    {cat:'documents',  name:'Flight tickets'},
-    {cat:'health',     name:'Painkillers'},
-    {cat:'misc',       name:'Notebook & pen'},{cat:'misc',       name:'Reusable bag'},
-  ],
-
-  winter: [
-    {cat:'clothes',    name:'Thermal base layer (×2)'},{cat:'clothes',    name:'Ski jacket'},
-    {cat:'clothes',    name:'Ski trousers'},{cat:'clothes',    name:'Warm fleece'},
-    {cat:'clothes',    name:'Woollen socks (×5)'},{cat:'clothes',    name:'Ski gloves'},
-    {cat:'clothes',    name:'Warm hat'},{cat:'clothes',    name:'Goggles'},
-    {cat:'clothes',    name:'Après-ski clothes'},{cat:'clothes',    name:'Waterproof boots'},
-    {cat:'toiletries', name:'Lip balm with SPF'},{cat:'toiletries', name:'Sunscreen SPF 30+'},
-    {cat:'toiletries', name:'Moisturiser'},{cat:'toiletries', name:'Toothbrush & toothpaste'},
-    {cat:'toiletries', name:'Deodorant'},
-    {cat:'electronics',name:'Phone charger'},{cat:'electronics',name:'Power bank'},
-    {cat:'documents',  name:'Passport'},{cat:'documents',  name:'Travel insurance'},
-    {cat:'documents',  name:'Ski pass / booking'},
-    {cat:'health',     name:'Painkillers'},{cat:'health',     name:'Plasters & bandages'},
-    {cat:'misc',       name:'Ski hire confirmation'},{cat:'misc',       name:'Reusable water bottle'},
-  ],
-
-  camping: [
-    {cat:'clothes',    name:'Hiking boots'},{cat:'clothes',    name:'Waterproof jacket'},
-    {cat:'clothes',    name:'Quick-dry trousers (×2)'},{cat:'clothes',    name:'T-shirts (×3)'},
-    {cat:'clothes',    name:'Warm fleece / jumper'},{cat:'clothes',    name:'Woollen socks (×4)'},
-    {cat:'clothes',    name:'Sun hat'},
-    {cat:'toiletries', name:'Biodegradable soap'},{cat:'toiletries', name:'Sunscreen'},
-    {cat:'toiletries', name:'Insect repellent'},{cat:'toiletries', name:'Toothbrush & toothpaste'},
-    {cat:'toiletries', name:'Hand sanitiser'},{cat:'toiletries', name:'Toilet paper'},
-    {cat:'electronics',name:'Head torch + batteries'},{cat:'electronics',name:'Phone / solar charger'},
-    {cat:'documents',  name:'Campsite booking'},{cat:'documents',  name:'Trail maps'},
-    {cat:'health',     name:'First aid kit'},{cat:'health',     name:'Painkillers'},
-    {cat:'health',     name:'Blister plasters'},
-    {cat:'misc',       name:'Tent'},{cat:'misc',       name:'Sleeping bag'},
-    {cat:'misc',       name:'Sleeping mat'},{cat:'misc',       name:'Camping stove & fuel'},
-    {cat:'misc',       name:'Matches / lighter'},{cat:'misc',       name:'Multi-tool'},
-    {cat:'misc',       name:'Reusable water bottle'},
-  ],
-
-  weekend: [
-    {cat:'clothes',    name:'Casual outfits (×2)'},{cat:'clothes',    name:'Smart outfit'},
-    {cat:'clothes',    name:'Comfortable shoes'},{cat:'clothes',    name:'Socks & underwear (×3)'},
-    {cat:'clothes',    name:'Pyjamas'},
-    {cat:'toiletries', name:'Toothbrush & toothpaste'},{cat:'toiletries', name:'Shampoo & conditioner'},
-    {cat:'toiletries', name:'Deodorant'},{cat:'toiletries', name:'Skincare basics'},
-    {cat:'electronics',name:'Phone charger'},{cat:'electronics',name:'Earbuds'},
-    {cat:'documents',  name:'ID'},{cat:'documents',  name:'Hotel / Airbnb booking'},
-    {cat:'health',     name:'Painkillers'},
-    {cat:'misc',       name:'Reusable bag'},{cat:'misc',       name:'Book / e-reader'},
-  ],
-
-  baby: [
-    {cat:'kids',       name:'Nappies'},{cat:'kids',       name:'Baby wipes'},
-    {cat:'kids',       name:'Nappy cream'},{cat:'kids',       name:'Baby food / pouches'},
-    {cat:'kids',       name:'Formula'},{cat:'kids',       name:'Baby bottles'},
-    {cat:'kids',       name:'Sippy cup'},{cat:'kids',       name:'Dummy / pacifier'},
-    {cat:'kids',       name:'Baby monitor'},{cat:'kids',       name:'Travel cot'},
-    {cat:'kids',       name:'Baby carrier / sling'},{cat:'kids',       name:'Stroller'},
-    {cat:'kids',       name:'Comfort blanket'},{cat:'kids',       name:'Favourite toy'},
-    {cat:'kids',       name:'Night light'},{cat:'kids',       name:'White noise machine'},
-    {cat:'clothes',    name:'Baby bodysuits'},{cat:'clothes',    name:'Baby sleep suits'},
-    {cat:'clothes',    name:'Warm layers for baby'},{cat:'clothes',    name:'Baby sun hat'},
-    {cat:'toiletries', name:'Baby bath wash'},{cat:'toiletries', name:'Baby sunscreen'},
-    {cat:'toiletries', name:'Baby nail scissors'},
-    {cat:'health',     name:'Baby paracetamol (Calpol)'},{cat:'health',     name:'Baby thermometer'},
-    {cat:'health',     name:'Teething gel / rings'},
-    {cat:'misc',       name:'Changing mat'},{cat:'misc',       name:'Muslin cloths'},
-    {cat:'misc',       name:'Bags for dirty clothes'},
-  ],
-
-  toddler: [
-    {cat:'kids',       name:'Nappies / pull-ups'},{cat:'kids',       name:'Baby wipes'},
-    {cat:'kids',       name:'Potty (if training)'},{cat:'kids',       name:'Snacks and drinks'},
-    {cat:'kids',       name:'Sippy cup'},{cat:'kids',       name:'Favourite toy'},
-    {cat:'kids',       name:'Comfort blanket'},{cat:'kids',       name:'Colouring book & crayons'},
-    {cat:'kids',       name:'Activity book'},{cat:'kids',       name:'Night light'},
-    {cat:'clothes',    name:'T-shirts (child)'},{cat:'clothes',    name:'Trousers (child)'},
-    {cat:'clothes',    name:'Pyjamas (child)'},{cat:'clothes',    name:'Trainers (child)'},
-    {cat:'clothes',    name:'Swimsuit (child)'},{cat:'clothes',    name:'Sun hat (child)'},
-    {cat:'toiletries', name:"Children's toothbrush & toothpaste"},
-    {cat:'toiletries', name:"Children's sunscreen"},
-    {cat:'toiletries', name:"Children's insect repellent"},
-    {cat:'health',     name:"Children's paracetamol"},
-    {cat:'health',     name:"Children's antihistamine"},
-    {cat:'health',     name:'Plasters'},
-    {cat:'misc',       name:'Buggy / pushchair'},{cat:'misc',       name:'Travel high chair'},
-  ],
-
-  school_trip: [
-    {cat:'clothes',    name:'Appropriate clothing (check list)'},{cat:'clothes',    name:'Comfortable trainers'},
-    {cat:'clothes',    name:'Waterproof jacket'},{cat:'clothes',    name:'Spare socks & underwear'},
-    {cat:'clothes',    name:'Pyjamas'},
-    {cat:'toiletries', name:'Toothbrush & toothpaste'},{cat:'toiletries', name:'Shampoo (small bottle)'},
-    {cat:'toiletries', name:'Deodorant'},
-    {cat:'health',     name:'Prescription medication (labelled)'},{cat:'health',     name:'Plasters'},
-    {cat:'documents',  name:'Parental consent form'},{cat:'documents',  name:'Medical info / allergy card'},
-    {cat:'documents',  name:'Emergency contact numbers'},
-    {cat:'misc',       name:'Packed lunch / snacks'},{cat:'misc',       name:'Water bottle (labelled)'},
-    {cat:'misc',       name:'Small backpack'},{cat:'misc',       name:'Pocket money (small amount)'},
-    {cat:'misc',       name:'Book / cards for downtime'},{cat:'misc',       name:'Torch (if camping)'},
-  ],
-
-  sports_camp: [
-    {cat:'clothes',    name:'Sports kit (×3)'},{cat:'clothes',    name:'Trainers'},
-    {cat:'clothes',    name:'Shin pads'},{cat:'clothes',    name:'Swimming kit'},
-    {cat:'clothes',    name:'Casual clothes (×2)'},{cat:'clothes',    name:'Pyjamas'},
-    {cat:'clothes',    name:'Waterproof jacket'},{cat:'clothes',    name:'Socks & underwear'},
-    {cat:'toiletries', name:'Toothbrush & toothpaste'},{cat:'toiletries', name:'Deodorant'},
-    {cat:'toiletries', name:'Shampoo'},{cat:'toiletries', name:'Sunscreen'},
-    {cat:'health',     name:'Prescription medication (labelled)'},
-    {cat:'health',     name:'Plasters & blister plasters'},
-    {cat:'health',     name:'Sports tape / support bandage'},
-    {cat:'documents',  name:'Camp information pack'},{cat:'documents',  name:'Emergency contacts'},
-    {cat:'documents',  name:'Medical form'},
-    {cat:'misc',       name:'Water bottle (labelled)'},{cat:'misc',       name:'Reusable bag'},
-    {cat:'misc',       name:'Small amount of pocket money'},{cat:'misc',       name:'Book / cards for rest time'},
-  ],
+const QTY = {
+  tops:    d => d === 'short' ? 3 : d === 'week' ? 5 : 8,
+  bottoms: d => d === 'short' ? 2 : d === 'week' ? 3 : 5,
+  swim:    d => d === 'short' ? 1 : d === 'week' ? 2 : 3,
+  socks:   d => d === 'short' ? 3 : d === 'week' ? 6 : 10,
 };
+
+function getProfileItems(tripType, profile, duration) {
+  if (tripType === 'blank') return [];
+  const fn = TRIP_BUILDERS[tripType];
+  return fn ? fn(profile, duration) : [];
+}
+
+function buildTemplateItems(tripType, members, duration) {
+  const all = [];
+  members.forEach(m => {
+    getProfileItems(tripType, m.profile || 'man', duration || 'week').forEach(t => {
+      all.push({
+        id: uid(), name: t.name, cat: t.cat,
+        checked: false, qty: t.qty || 1, note: '', assignedTo: m.id,
+      });
+    });
+  });
+  return all;
+}
+
+const TRIP_BUILDERS = {
+
+  beach(profile, duration) {
+    const tops = QTY.tops(duration), bottoms = QTY.bottoms(duration), swim = QTY.swim(duration);
+    const isKid = profile === 'girl' || profile === 'boy';
+    const isLong = duration === 'long';
+    const items = [];
+
+    if (profile === 'man') {
+      items.push(
+        {cat:'clothes',    name:'Swim trunks',              qty: swim},
+        {cat:'clothes',    name:'T-shirts',                 qty: tops},
+        {cat:'clothes',    name:'Shorts',                   qty: bottoms},
+        {cat:'clothes',    name:'Smart casual shirt'},
+        {cat:'clothes',    name:'Flip flops'},
+        {cat:'clothes',    name:'Sandals / trainers'},
+        {cat:'clothes',    name:'Sunglasses'},
+        {cat:'clothes',    name:'Sun hat'},
+        {cat:'clothes',    name:'Underwear',                qty: tops},
+        {cat:'clothes',    name:'Socks',                    qty: tops},
+        {cat:'toiletries', name:'Toothbrush & toothpaste'},
+        {cat:'toiletries', name:'Deodorant'},
+        {cat:'toiletries', name:'Shampoo'},
+        {cat:'toiletries', name:'Body wash'},
+        {cat:'toiletries', name:'Razor & shaving cream'},
+        {cat:'toiletries', name:'Sunscreen SPF 50+'},
+        {cat:'toiletries', name:'After-sun lotion'},
+        {cat:'toiletries', name:'Lip balm with SPF'},
+        {cat:'toiletries', name:'Insect repellent'},
+        {cat:'documents',  name:'Passport'},
+        {cat:'documents',  name:'Travel insurance'},
+        {cat:'documents',  name:'Flight tickets'},
+        {cat:'documents',  name:'Hotel booking'},
+        {cat:'documents',  name:'Travel cash / card'},
+        {cat:'electronics',name:'Phone charger'},
+        {cat:'electronics',name:'Power bank'},
+        {cat:'electronics',name:'Earbuds'},
+        {cat:'health',     name:'Painkillers'},
+        {cat:'health',     name:'Antihistamine'},
+        {cat:'health',     name:'Plasters'},
+        {cat:'misc',       name:'Beach towel'},
+        {cat:'misc',       name:'Reusable water bottle'},
+        {cat:'misc',       name:'Book / e-reader'},
+      );
+    } else if (profile === 'woman') {
+      items.push(
+        {cat:'clothes',    name:'Swimsuit / bikini',        qty: swim},
+        {cat:'clothes',    name:'Cover-up / sarong'},
+        {cat:'clothes',    name:'Sundresses / tops',        qty: tops},
+        {cat:'clothes',    name:'Shorts or skirts',         qty: bottoms},
+        {cat:'clothes',    name:'Evening outfit'},
+        {cat:'clothes',    name:'Flip flops'},
+        {cat:'clothes',    name:'Sandals'},
+        {cat:'clothes',    name:'Sunglasses'},
+        {cat:'clothes',    name:'Sun hat'},
+        {cat:'clothes',    name:'Underwear',                qty: tops},
+        {cat:'toiletries', name:'Toothbrush & toothpaste'},
+        {cat:'toiletries', name:'Deodorant'},
+        {cat:'toiletries', name:'Shampoo & conditioner'},
+        {cat:'toiletries', name:'Body wash'},
+        {cat:'toiletries', name:'Face wash & moisturiser'},
+        {cat:'toiletries', name:'Feminine hygiene products'},
+        {cat:'toiletries', name:'Sunscreen SPF 50+'},
+        {cat:'toiletries', name:'After-sun lotion'},
+        {cat:'toiletries', name:'Lip balm with SPF'},
+        {cat:'toiletries', name:'Insect repellent'},
+        {cat:'toiletries', name:'Makeup essentials'},
+        {cat:'documents',  name:'Passport'},
+        {cat:'documents',  name:'Travel insurance'},
+        {cat:'documents',  name:'Flight tickets'},
+        {cat:'documents',  name:'Hotel booking'},
+        {cat:'documents',  name:'Travel cash / card'},
+        {cat:'electronics',name:'Phone charger'},
+        {cat:'electronics',name:'Power bank'},
+        {cat:'electronics',name:'Earbuds'},
+        {cat:'health',     name:'Painkillers'},
+        {cat:'health',     name:'Antihistamine'},
+        {cat:'health',     name:'Plasters'},
+        {cat:'misc',       name:'Beach towel'},
+        {cat:'misc',       name:'Reusable water bottle'},
+        {cat:'misc',       name:'Book / e-reader'},
+      );
+    } else if (profile === 'girl') {
+      items.push(
+        {cat:'clothes',    name:'Girls\' swimsuit',         qty: swim},
+        {cat:'clothes',    name:'Rash vest / swim top'},
+        {cat:'clothes',    name:'Summer dresses / tops',    qty: tops},
+        {cat:'clothes',    name:'Shorts / leggings',        qty: bottoms},
+        {cat:'clothes',    name:'Flip flops'},
+        {cat:'clothes',    name:'Trainers'},
+        {cat:'clothes',    name:'Sun hat'},
+        {cat:'clothes',    name:'Underwear',                qty: tops},
+        {cat:'clothes',    name:'Pyjamas'},
+        {cat:'toiletries', name:'Children\'s toothbrush & toothpaste'},
+        {cat:'toiletries', name:'Kids\' sunscreen SPF 50+'},
+        {cat:'toiletries', name:'Children\'s insect repellent'},
+        {cat:'toiletries', name:'Hair brush & hair ties'},
+        {cat:'documents',  name:'Passport'},
+        {cat:'health',     name:'Children\'s paracetamol'},
+        {cat:'health',     name:'Plasters'},
+        {cat:'health',     name:'Any prescription medication'},
+        {cat:'kids',       name:'Favourite toy'},
+        {cat:'kids',       name:'Colouring book & crayons'},
+        {cat:'kids',       name:'Activity book'},
+        {cat:'misc',       name:'Reusable water bottle'},
+        {cat:'misc',       name:'Snacks'},
+      );
+    } else { // boy
+      items.push(
+        {cat:'clothes',    name:'Swim trunks',              qty: swim},
+        {cat:'clothes',    name:'Rash vest'},
+        {cat:'clothes',    name:'T-shirts',                 qty: tops},
+        {cat:'clothes',    name:'Shorts',                   qty: bottoms},
+        {cat:'clothes',    name:'Flip flops'},
+        {cat:'clothes',    name:'Trainers'},
+        {cat:'clothes',    name:'Sun hat'},
+        {cat:'clothes',    name:'Underwear',                qty: tops},
+        {cat:'clothes',    name:'Pyjamas'},
+        {cat:'toiletries', name:'Children\'s toothbrush & toothpaste'},
+        {cat:'toiletries', name:'Kids\' sunscreen SPF 50+'},
+        {cat:'toiletries', name:'Children\'s insect repellent'},
+        {cat:'documents',  name:'Passport'},
+        {cat:'health',     name:'Children\'s paracetamol'},
+        {cat:'health',     name:'Plasters'},
+        {cat:'health',     name:'Any prescription medication'},
+        {cat:'kids',       name:'Favourite toy'},
+        {cat:'kids',       name:'Beach toys (bucket & spade)'},
+        {cat:'misc',       name:'Reusable water bottle'},
+        {cat:'misc',       name:'Snacks'},
+      );
+    }
+    if (isLong) {
+      items.push({cat:'misc', name:'Laundry bag'});
+      items.push({cat:'toiletries', name:'Travel detergent'});
+      if (!isKid) items.push({cat:'electronics', name:'Universal adapter'});
+    }
+    return items;
+  },
+
+  business(profile, duration) {
+    const tops = QTY.tops(duration), bottoms = QTY.bottoms(duration);
+    const isLong = duration === 'long';
+    const isFem  = profile === 'woman';
+    const items  = [];
+
+    if (profile === 'man') {
+      items.push(
+        {cat:'clothes',    name:'Dress shirts',             qty: tops},
+        {cat:'clothes',    name:'Trousers',                 qty: bottoms},
+        {cat:'clothes',    name:'Suit jacket'},
+        {cat:'clothes',    name:'Tie'},
+        {cat:'clothes',    name:'Smart shoes'},
+        {cat:'clothes',    name:'Casual outfit'},
+        {cat:'clothes',    name:'Socks & underwear',        qty: tops},
+        {cat:'toiletries', name:'Toothbrush & toothpaste'},
+        {cat:'toiletries', name:'Deodorant'},
+        {cat:'toiletries', name:'Shampoo'},
+        {cat:'toiletries', name:'Razor & shaving cream'},
+      );
+    } else if (profile === 'woman') {
+      items.push(
+        {cat:'clothes',    name:'Smart blouses / tops',     qty: tops},
+        {cat:'clothes',    name:'Trousers or skirts',       qty: bottoms},
+        {cat:'clothes',    name:'Blazer'},
+        {cat:'clothes',    name:'Smart shoes'},
+        {cat:'clothes',    name:'Casual outfit'},
+        {cat:'clothes',    name:'Underwear',                qty: tops},
+        {cat:'toiletries', name:'Toothbrush & toothpaste'},
+        {cat:'toiletries', name:'Deodorant'},
+        {cat:'toiletries', name:'Shampoo & conditioner'},
+        {cat:'toiletries', name:'Face wash & moisturiser'},
+        {cat:'toiletries', name:'Makeup essentials'},
+      );
+    } else {
+      items.push(
+        {cat:'clothes',    name:'Comfortable outfits',      qty: tops},
+        {cat:'toiletries', name:'Toothbrush & toothpaste'},
+        {cat:'documents',  name:'Passport'},
+      );
+    }
+
+    if (profile === 'man' || profile === 'woman') {
+      items.push(
+        {cat:'documents',  name:'Passport / ID'},
+        {cat:'documents',  name:'Business cards'},
+        {cat:'documents',  name:'Meeting agenda / notes'},
+        {cat:'documents',  name:'Hotel booking'},
+        {cat:'documents',  name:'Flight tickets'},
+        {cat:'documents',  name:'Travel insurance'},
+        {cat:'electronics',name:'Laptop & charger'},
+        {cat:'electronics',name:'Phone charger'},
+        {cat:'electronics',name:'Universal adapter'},
+        {cat:'electronics',name:'Earbuds'},
+        {cat:'health',     name:'Painkillers'},
+        {cat:'misc',       name:'Notebook & pen'},
+        {cat:'misc',       name:'Reusable bag'},
+      );
+    }
+    if (isLong) items.push({cat:'misc', name:'Laundry bag'});
+    return items;
+  },
+
+  winter(profile, duration) {
+    const isKid = profile === 'girl' || profile === 'boy';
+    const isFem = profile === 'woman' || profile === 'girl';
+    const socks = QTY.socks(duration);
+    const items = [];
+
+    items.push(
+      {cat:'clothes', name: isKid ? 'Thermal base layers (child)' : 'Thermal base layers',   qty: 2},
+      {cat:'clothes', name: isKid ? 'Warm fleece (child)'         : 'Warm fleece / mid-layer'},
+      {cat:'clothes', name:'Ski jacket'},
+      {cat:'clothes', name:'Ski trousers'},
+      {cat:'clothes', name:'Ski gloves'},
+      {cat:'clothes', name:'Warm hat'},
+      {cat:'clothes', name:'Neck gaiter / balaclava'},
+      {cat:'clothes', name:'Ski goggles'},
+      {cat:'clothes', name:'Woollen socks',                                                   qty: socks},
+      {cat:'clothes', name:'Waterproof snow boots'},
+    );
+
+    if (!isKid) {
+      items.push(
+        {cat:'clothes',    name:'Après-ski outfit'},
+        {cat:'clothes',    name:'Casual / smart top',       qty: 2},
+        {cat:'clothes',    name:'Underwear',                qty: socks},
+        {cat:'toiletries', name:'Toothbrush & toothpaste'},
+        {cat:'toiletries', name:'Deodorant'},
+        {cat:'toiletries', name: isFem ? 'Shampoo & conditioner' : 'Shampoo'},
+        {cat:'toiletries', name:'Rich moisturiser (cold weather)'},
+        {cat:'toiletries', name:'Lip balm with SPF'},
+        {cat:'toiletries', name:'Sunscreen SPF 30+'},
+        {cat:'documents',  name:'Passport'},
+        {cat:'documents',  name:'Travel insurance (with ski cover)'},
+        {cat:'documents',  name:'Ski pass / lift pass booking'},
+        {cat:'documents',  name:'Flight / transfer tickets'},
+        {cat:'documents',  name:'Hotel booking'},
+        {cat:'electronics',name:'Phone charger'},
+        {cat:'electronics',name:'Power bank'},
+        {cat:'health',     name:'Painkillers'},
+        {cat:'health',     name:'Plasters & blister plasters'},
+        {cat:'misc',       name:'Ski hire confirmation'},
+        {cat:'misc',       name:'Reusable water bottle'},
+      );
+      if (isFem) items.push({cat:'toiletries', name:'Feminine hygiene products'});
+    } else {
+      items.push(
+        {cat:'clothes',    name:'Pyjamas (warm)'},
+        {cat:'toiletries', name:'Children\'s toothbrush & toothpaste'},
+        {cat:'toiletries', name:'Lip balm (child)'},
+        {cat:'documents',  name:'Passport'},
+        {cat:'health',     name:'Children\'s paracetamol'},
+        {cat:'health',     name:'Plasters'},
+        {cat:'kids',       name:'Comfort toy'},
+        {cat:'misc',       name:'Reusable water bottle'},
+        {cat:'misc',       name:'Snacks'},
+      );
+    }
+    return items;
+  },
+
+  camping(profile, duration) {
+    const tops = QTY.tops(duration);
+    const isKid = profile === 'girl' || profile === 'boy';
+    const isFem = profile === 'woman' || profile === 'girl';
+    const items = [];
+
+    items.push(
+      {cat:'clothes', name: isKid ? 'Hiking trainers (child)' : 'Hiking boots'},
+      {cat:'clothes', name:'Waterproof jacket'},
+      {cat:'clothes', name: isKid ? 'T-shirts (child)' : 'T-shirts',             qty: tops},
+      {cat:'clothes', name: isKid ? 'Trousers / leggings (child)' : 'Hiking trousers', qty: 2},
+      {cat:'clothes', name:'Warm fleece'},
+      {cat:'clothes', name:'Woollen socks',                                        qty: tops},
+      {cat:'clothes', name:'Sun hat'},
+      {cat:'clothes', name:'Thermal underlayer'},
+      {cat:'clothes', name:'Underwear',                                            qty: tops},
+      {cat:'clothes', name:'Pyjamas'},
+    );
+
+    if (!isKid) {
+      items.push(
+        {cat:'toiletries', name:'Biodegradable soap'},
+        {cat:'toiletries', name: isFem ? 'Shampoo (biodegradable)' : 'Shampoo (dry / biodegradable)'},
+        {cat:'toiletries', name:'Toothbrush & toothpaste'},
+        {cat:'toiletries', name:'Deodorant'},
+        {cat:'toiletries', name:'Sunscreen'},
+        {cat:'toiletries', name:'Insect repellent'},
+        {cat:'toiletries', name:'Hand sanitiser'},
+        {cat:'toiletries', name:'Toilet paper'},
+        {cat:'documents',  name:'Campsite booking'},
+        {cat:'documents',  name:'Trail maps / offline navigation'},
+        {cat:'documents',  name:'Passport'},
+        {cat:'electronics',name:'Head torch + spare batteries'},
+        {cat:'electronics',name:'Phone / solar charger'},
+        {cat:'health',     name:'First aid kit'},
+        {cat:'health',     name:'Painkillers'},
+        {cat:'health',     name:'Blister plasters'},
+        {cat:'health',     name:'Insect bite relief cream'},
+        {cat:'misc',       name:'Sleeping bag'},
+        {cat:'misc',       name:'Sleeping mat'},
+        {cat:'misc',       name:'Reusable water bottle'},
+        {cat:'misc',       name:'Multi-tool'},
+      );
+      if (isFem) items.push({cat:'toiletries', name:'Feminine hygiene products'});
+    } else {
+      items.push(
+        {cat:'toiletries', name:'Children\'s toothbrush & toothpaste'},
+        {cat:'toiletries', name:'Kids\' sunscreen'},
+        {cat:'toiletries', name:'Children\'s insect repellent'},
+        {cat:'documents',  name:'Passport'},
+        {cat:'health',     name:'Children\'s paracetamol'},
+        {cat:'health',     name:'Plasters'},
+        {cat:'kids',       name:'Comfort toy'},
+        {cat:'kids',       name:'Child\'s torch'},
+        {cat:'misc',       name:'Sleeping bag (child)'},
+        {cat:'misc',       name:'Sleeping mat'},
+        {cat:'misc',       name:'Reusable water bottle'},
+        {cat:'misc',       name:'Snacks'},
+      );
+    }
+    return items;
+  },
+
+  weekend(profile, duration) {
+    const tops   = Math.max(2, QTY.tops(duration) - 1);
+    const isKid  = profile === 'girl' || profile === 'boy';
+    const isFem  = profile === 'woman' || profile === 'girl';
+    const items  = [];
+
+    if (profile === 'man') {
+      items.push(
+        {cat:'clothes',    name:'Casual outfits',           qty: tops},
+        {cat:'clothes',    name:'Smart outfit'},
+        {cat:'clothes',    name:'Comfortable shoes'},
+        {cat:'clothes',    name:'Socks & underwear',        qty: tops},
+        {cat:'clothes',    name:'Pyjamas'},
+        {cat:'toiletries', name:'Toothbrush & toothpaste'},
+        {cat:'toiletries', name:'Deodorant'},
+        {cat:'toiletries', name:'Shampoo'},
+        {cat:'toiletries', name:'Razor'},
+        {cat:'documents',  name:'ID'},
+        {cat:'documents',  name:'Hotel / Airbnb booking'},
+        {cat:'electronics',name:'Phone charger'},
+        {cat:'health',     name:'Painkillers'},
+        {cat:'misc',       name:'Reusable bag'},
+      );
+    } else if (profile === 'woman') {
+      items.push(
+        {cat:'clothes',    name:'Casual outfits',           qty: tops},
+        {cat:'clothes',    name:'Smart / evening outfit'},
+        {cat:'clothes',    name:'Comfortable shoes'},
+        {cat:'clothes',    name:'Evening shoes'},
+        {cat:'clothes',    name:'Underwear',                qty: tops},
+        {cat:'clothes',    name:'Pyjamas'},
+        {cat:'toiletries', name:'Toothbrush & toothpaste'},
+        {cat:'toiletries', name:'Deodorant'},
+        {cat:'toiletries', name:'Shampoo & conditioner'},
+        {cat:'toiletries', name:'Face wash & skincare basics'},
+        {cat:'toiletries', name:'Makeup essentials'},
+        {cat:'documents',  name:'ID'},
+        {cat:'documents',  name:'Hotel / Airbnb booking'},
+        {cat:'electronics',name:'Phone charger'},
+        {cat:'health',     name:'Painkillers'},
+        {cat:'misc',       name:'Reusable bag'},
+      );
+    } else {
+      items.push(
+        {cat:'clothes',    name: isFem ? 'Outfits (girl)' : 'Outfits (boy)',      qty: tops},
+        {cat:'clothes',    name:'Comfortable shoes'},
+        {cat:'clothes',    name:'Underwear',                qty: tops},
+        {cat:'clothes',    name:'Pyjamas'},
+        {cat:'toiletries', name:'Children\'s toothbrush & toothpaste'},
+        {cat:'documents',  name:'Passport'},
+        {cat:'health',     name:'Children\'s paracetamol'},
+        {cat:'health',     name:'Plasters'},
+        {cat:'kids',       name:'Favourite toy'},
+        {cat:'misc',       name:'Reusable water bottle'},
+        {cat:'misc',       name:'Snacks'},
+      );
+    }
+    return items;
+  },
+
+  baby(profile, duration) {
+    const isKid = profile === 'girl' || profile === 'boy';
+    if (!isKid) return TRIP_BUILDERS.weekend(profile, duration);
+    const nappies = duration === 'short' ? 30 : duration === 'week' ? 60 : 120;
+    return [
+      {cat:'kids',       name:'Nappies',                   qty: nappies},
+      {cat:'kids',       name:'Baby wipes',                qty: duration === 'short' ? 2 : 5},
+      {cat:'kids',       name:'Nappy cream'},
+      {cat:'kids',       name:'Baby food / pouches'},
+      {cat:'kids',       name:'Formula (if applicable)'},
+      {cat:'kids',       name:'Baby bottles'},
+      {cat:'kids',       name:'Sippy cup'},
+      {cat:'kids',       name:'Dummy / pacifier'},
+      {cat:'kids',       name:'Travel cot'},
+      {cat:'kids',       name:'Baby monitor'},
+      {cat:'kids',       name:'Baby carrier / sling'},
+      {cat:'kids',       name:'Stroller'},
+      {cat:'kids',       name:'Comfort blanket'},
+      {cat:'kids',       name:'Favourite toy'},
+      {cat:'kids',       name:'Night light'},
+      {cat:'kids',       name:'White noise machine'},
+      {cat:'clothes',    name:'Baby bodysuits',            qty: duration === 'short' ? 5 : 10},
+      {cat:'clothes',    name:'Baby sleep suits',          qty: duration === 'short' ? 3 : 6},
+      {cat:'clothes',    name:'Warm layers for baby'},
+      {cat:'clothes',    name:'Baby sun hat'},
+      {cat:'toiletries', name:'Baby bath wash'},
+      {cat:'toiletries', name:'Baby sunscreen'},
+      {cat:'toiletries', name:'Baby nail scissors'},
+      {cat:'health',     name:'Baby paracetamol (Calpol)'},
+      {cat:'health',     name:'Baby thermometer'},
+      {cat:'health',     name:'Teething gel / rings'},
+      {cat:'misc',       name:'Changing mat'},
+      {cat:'misc',       name:'Muslin cloths',             qty: 6},
+      {cat:'misc',       name:'Bags for dirty clothes'},
+      {cat:'documents',  name:'Passport'},
+    ];
+  },
+
+  toddler(profile, duration) {
+    const isKid = profile === 'girl' || profile === 'boy';
+    const isFem = profile === 'woman' || profile === 'girl';
+    if (!isKid) return TRIP_BUILDERS.weekend(profile, duration);
+    const tops = QTY.tops(duration);
+    return [
+      {cat:'kids',       name:'Nappies / pull-ups'},
+      {cat:'kids',       name:'Baby wipes'},
+      {cat:'kids',       name:'Potty (if training)'},
+      {cat:'kids',       name:'Snacks and drinks'},
+      {cat:'kids',       name:'Sippy cup'},
+      {cat:'kids',       name:'Favourite toy'},
+      {cat:'kids',       name:'Comfort blanket'},
+      {cat:'kids',       name:'Colouring book & crayons'},
+      {cat:'kids',       name:'Night light'},
+      {cat:'clothes',    name: isFem ? 'Dresses / tops (child)' : 'T-shirts (child)',  qty: tops},
+      {cat:'clothes',    name:'Trousers / leggings (child)',qty: 3},
+      {cat:'clothes',    name:'Pyjamas',                   qty: 2},
+      {cat:'clothes',    name:'Trainers (child)'},
+      {cat:'clothes',    name:'Swimsuit (child)'},
+      {cat:'clothes',    name:'Sun hat (child)'},
+      {cat:'clothes',    name:'Underwear',                 qty: tops},
+      {cat:'toiletries', name:'Children\'s toothbrush & toothpaste'},
+      {cat:'toiletries', name:'Children\'s sunscreen'},
+      {cat:'toiletries', name:'Children\'s insect repellent'},
+      {cat:'health',     name:'Children\'s paracetamol'},
+      {cat:'health',     name:'Children\'s antihistamine'},
+      {cat:'health',     name:'Plasters'},
+      {cat:'misc',       name:'Stroller / buggy'},
+      {cat:'misc',       name:'Reusable water bottle'},
+      {cat:'documents',  name:'Passport'},
+    ];
+  },
+
+  school_trip(profile, duration) {
+    const isKid = profile === 'girl' || profile === 'boy';
+    if (!isKid) return TRIP_BUILDERS.weekend(profile, duration);
+    const tops = QTY.tops(duration);
+    return [
+      {cat:'clothes',    name:'Appropriate clothing (check school list)', qty: tops},
+      {cat:'clothes',    name:'Comfortable trainers'},
+      {cat:'clothes',    name:'Waterproof jacket'},
+      {cat:'clothes',    name:'Spare socks & underwear',  qty: tops},
+      {cat:'clothes',    name:'Pyjamas'},
+      {cat:'toiletries', name:'Toothbrush & toothpaste'},
+      {cat:'toiletries', name:'Shampoo (small bottle)'},
+      {cat:'toiletries', name:'Deodorant'},
+      {cat:'health',     name:'Prescription medication (labelled)'},
+      {cat:'health',     name:'Plasters'},
+      {cat:'documents',  name:'Parental consent form'},
+      {cat:'documents',  name:'Medical / allergy card'},
+      {cat:'documents',  name:'Emergency contact numbers'},
+      {cat:'misc',       name:'Labelled water bottle'},
+      {cat:'misc',       name:'Small backpack'},
+      {cat:'misc',       name:'Pocket money (small amount)'},
+      {cat:'misc',       name:'Book or cards for downtime'},
+    ];
+  },
+
+  sports_camp(profile, duration) {
+    const tops  = QTY.tops(duration);
+    const isKid = profile === 'girl' || profile === 'boy';
+    const items = [
+      {cat:'clothes',    name:'Sports kit',                qty: 3},
+      {cat:'clothes',    name:'Trainers (sport)'},
+      {cat:'clothes',    name:'Swimming kit'},
+      {cat:'clothes',    name:'Casual clothes',            qty: tops - 2},
+      {cat:'clothes',    name:'Pyjamas'},
+      {cat:'clothes',    name:'Waterproof jacket'},
+      {cat:'clothes',    name:'Socks & underwear',         qty: tops},
+      {cat:'toiletries', name:'Toothbrush & toothpaste'},
+      {cat:'toiletries', name:'Deodorant'},
+      {cat:'toiletries', name:'Shampoo'},
+      {cat:'toiletries', name:'Sunscreen'},
+      {cat:'health',     name:'Prescription medication (labelled)'},
+      {cat:'health',     name:'Plasters & blister plasters'},
+      {cat:'health',     name:'Sports support bandage'},
+      {cat:'documents',  name:'Camp information pack'},
+      {cat:'documents',  name:'Emergency contacts'},
+      {cat:'documents',  name:'Medical form'},
+      {cat:'misc',       name:'Labelled water bottle'},
+      {cat:'misc',       name:'Reusable bag'},
+    ];
+    if (isKid) {
+      items.push({cat:'misc', name:'Pocket money (small amount)'});
+    } else {
+      items.push(
+        {cat:'documents',  name:'Passport / ID'},
+        {cat:'misc',       name:'Sports nutrition / snacks'},
+      );
+    }
+    return items;
+  },
+};
+
 
 /* ════════════════════════════════════════
    STATE
@@ -219,12 +618,14 @@ let state = {
 };
 
 // Module-level transient state (not persisted)
-let dragSrcId       = null;
-let editItemId      = null;
-let activeModal     = null;
-let searchQuery     = '';
-let lastDeleted     = null;  // { item, tripId, index } for undo
-let progressSnapshot = {};   // { [tripId]: number } to detect 100% crossing
+let dragSrcId        = null;
+let editItemId       = null;
+let activeModal      = null;
+let searchQuery      = '';
+let lastDeleted      = null;  // { item, tripId, index } for undo
+let progressSnapshot = {};    // { [tripId]: number } to detect 100% crossing
+let modalTravelers   = [];    // transient — while new trip modal is open
+let modalDuration    = 'week';
 
 function loadState() {
   try {
@@ -412,11 +813,14 @@ function renderCategorySelect() {
   $('new-item-category').innerHTML = opts;
 }
 
-function renderAssigneeSelect(trip, selId = 'new-item-assignee', currentVal = 'all') {
+function renderAssigneeSelect(trip, selId = 'new-item-assignee', currentVal = null) {
   const el = $(selId);
-  el.innerHTML = `<option value="all">👥 Everyone</option>` +
+  const def = currentVal !== null ? currentVal
+            : (state.activeMember !== 'all' ? state.activeMember : 'all');
+  const sharedLabel = (trip.members || []).length >= 2 ? '👥 Shared (everyone)' : '👥 Everyone';
+  el.innerHTML = `<option value="all"${def === 'all' ? ' selected' : ''}>${sharedLabel}</option>` +
     (trip.members || []).map(m =>
-      `<option value="${m.id}"${m.id === currentVal ? ' selected' : ''}>${m.isKid ? '🧒' : '👤'} ${m.name}</option>`
+      `<option value="${m.id}"${m.id === def ? ' selected' : ''}>${m.isKid ? '🧒' : '👤'} ${m.name}</option>`
     ).join('');
 }
 
@@ -433,8 +837,13 @@ function renderTripSelect() {
 
 function renderMemberFilter(trip) {
   const members = trip.members || [];
+  const row = $('member-filter-row');
+  if (members.length <= 1) {
+    row.innerHTML = '';
+    return;
+  }
   let html = `<button class="member-pill${state.activeMember === 'all' ? ' active' : ''}" data-member="all">
-    <svg class="icon icon-sm"><use href="#ic-users"/></svg> All</button>`;
+    <svg class="icon icon-sm"><use href="#ic-users"/></svg> Everyone</button>`;
   members.forEach(m => {
     html += `<button class="member-pill${state.activeMember === m.id ? ' active' : ''}"
       data-member="${m.id}" style="--member-color:${m.color}">
@@ -443,7 +852,7 @@ function renderMemberFilter(trip) {
   });
   html += `<button class="member-pill member-add" id="btn-add-member">
     <svg class="icon icon-sm"><use href="#ic-user-plus"/></svg> Add</button>`;
-  $('member-filter-row').innerHTML = html;
+  row.innerHTML = html;
 }
 
 function renderMemberSummary(trip) {
@@ -500,16 +909,60 @@ function renderProgress(trip) {
 }
 
 function renderCategories(trip) {
-  const items = visibleItems(trip);
+  const ctn = $('categories-container');
+  ctn.innerHTML = '';
+  const multiMember = (trip.members || []).length >= 2;
+  const memberActive = state.activeMember !== 'all';
+
+  if (memberActive && multiMember) {
+    // Split view: My List + Shared
+    const myItems     = applyItemFilters(trip.items.filter(i => i.assignedTo === state.activeMember));
+    const sharedItems = applyItemFilters(trip.items.filter(i => i.assignedTo === 'all'));
+    appendSectionHeader(ctn, 'My List', myItems, false);
+    if (myItems.length === 0) appendEmptySection(ctn, 'No items yet — add something above.');
+    else                      appendCategoryCards(myItems, trip, ctn);
+    appendSectionHeader(ctn, 'Shared', sharedItems, true);
+    if (sharedItems.length === 0) appendEmptySection(ctn, 'Shared list is empty. Move items here to share with everyone.');
+    else                          appendCategoryCards(sharedItems, trip, ctn);
+  } else {
+    appendCategoryCards(applyItemFilters(visibleItems(trip)), trip, ctn);
+  }
+}
+
+function applyItemFilters(items) {
+  let out = items;
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    out = out.filter(i => i.name.toLowerCase().includes(q));
+  }
+  if (state.showOnlyRemaining) out = out.filter(i => !i.checked);
+  return out;
+}
+
+function appendSectionHeader(ctn, title, items, isShared) {
+  const div = document.createElement('div');
+  div.className = 'list-section-header' + (isShared ? ' list-section-header--shared' : '');
+  const checked = items.filter(i => i.checked).length;
+  div.innerHTML = (isShared ? `<svg class="icon icon-sm"><use href="#ic-users"/></svg>` : '')
+    + `<span class="list-section-title">${title}</span>`
+    + `<span class="list-section-count">${checked}/${items.length}</span>`;
+  ctn.appendChild(div);
+}
+
+function appendEmptySection(ctn, msg) {
+  const div = document.createElement('div');
+  div.className = 'list-section-empty';
+  div.textContent = msg;
+  ctn.appendChild(div);
+}
+
+function appendCategoryCards(items, trip, ctn) {
   const byCat = {};
   CATEGORIES.forEach(c => { byCat[c.id] = []; });
   items.forEach(item => {
     if (byCat[item.cat]) byCat[item.cat].push(item);
     else                 byCat['misc'].push(item);
   });
-
-  const ctn = $('categories-container');
-  ctn.innerHTML = '';
 
   CATEGORIES.forEach(cat => {
     const catItems = byCat[cat.id] || [];
@@ -518,7 +971,6 @@ function renderCategories(trip) {
     const checkedCount = catItems.filter(i => i.checked).length;
     const card = document.createElement('div');
     card.className = 'category-card';
-
     card.innerHTML = `
       <div class="category-header">
         <span class="category-title">${cat.label}
@@ -530,14 +982,11 @@ function renderCategories(trip) {
 
     const list   = card.querySelector('.category-items');
     const toggle = card.querySelector('.category-toggle');
-
     catItems.forEach(item => list.appendChild(buildItemRow(item, trip)));
-
     card.querySelector('.category-header').addEventListener('click', () => {
       toggle.classList.toggle('collapsed');
       list.classList.toggle('collapsed');
     });
-
     ctn.appendChild(card);
   });
 }
@@ -548,16 +997,27 @@ function buildItemRow(item, trip) {
   li.dataset.id = item.id;
   li.draggable = true;
 
-  const member   = item.assignedTo !== 'all' ? getMember(trip, item.assignedTo) : null;
-  const qtySpan  = (item.qty && item.qty > 1) ? `<span class="item-qty">×${item.qty}</span>` : '';
-  const badge    = member ? `<span class="member-badge" style="background:${member.color}" title="${member.name}">${member.name[0].toUpperCase()}</span>` : '';
+  const multiMember  = (trip.members || []).length >= 2;
+  const memberActive = state.activeMember !== 'all';
+  const isShared     = item.assignedTo === 'all';
+  const member       = !isShared ? getMember(trip, item.assignedTo) : null;
+  const qtySpan      = (item.qty && item.qty > 1) ? `<span class="item-qty">×${item.qty}</span>` : '';
+  // In all-view, show member badge; in split-view it's redundant
+  const badge  = (member && !memberActive) ? `<span class="member-badge" style="background:${member.color}" title="${member.name}">${member.name[0].toUpperCase()}</span>` : '';
   const noteIcon = item.note ? `<span class="note-icon" title="${escapeHtml(item.note)}"><svg class="icon icon-sm"><use href="#ic-note"/></svg></span>` : '';
+
+  let moveBtn = '';
+  if (multiMember && memberActive) {
+    moveBtn = isShared
+      ? `<button class="move-btn move-to-personal" data-id="${item.id}" title="Move to my list"><svg class="icon icon-sm"><use href="#ic-user"/></svg></button>`
+      : `<button class="move-btn move-to-shared"   data-id="${item.id}" title="Move to Shared"><svg class="icon icon-sm"><use href="#ic-users"/></svg></button>`;
+  }
 
   li.innerHTML = `
     <span class="drag-handle"></span>
     <div class="item-checkbox${item.checked ? ' checked' : ''}" data-id="${item.id}"></div>
     <span class="item-label${item.checked ? ' checked' : ''}">${escapeHtml(item.name)}${qtySpan}</span>
-    ${badge}${noteIcon}
+    ${badge}${noteIcon}${moveBtn}
     <button class="item-edit"   data-id="${item.id}" title="Edit"><svg class="icon icon-sm"><use href="#ic-pencil"/></svg></button>
     <button class="item-delete" data-id="${item.id}" title="Remove"><svg class="icon icon-sm"><use href="#ic-x"/></svg></button>`;
 
@@ -631,6 +1091,14 @@ function renderAll() {
 
   const trip = getActiveTrip();
   if (!trip) return;
+
+  // Auto-manage activeMember
+  const members = trip.members || [];
+  if (members.length === 1 && state.activeMember === 'all') {
+    state.activeMember = members[0].id;
+  } else if (state.activeMember !== 'all' && !members.find(m => m.id === state.activeMember)) {
+    state.activeMember = members.length > 0 ? members[0].id : 'all';
+  }
 
   renderTripDate(trip);
   renderMemberFilter(trip);
@@ -752,25 +1220,34 @@ function _showToastEl(msg, undoFn) {
    ACTIONS
 ════════════════════════════════════════ */
 
-function createTrip(name, templateKey, personalTemplateId, departureDate) {
-  let src;
+function createTrip(name, templateKey, personalTemplateId, travelers, duration, departureDate) {
+  const members = (travelers || []).map(t => ({
+    id: uid(),
+    name: t.name || 'Traveler',
+    color: t.color || MEMBER_COLORS[0],
+    isKid: t.profile === 'girl' || t.profile === 'boy',
+    profile: t.profile || 'man',
+  }));
+
+  let items;
   if (personalTemplateId) {
     const pt = state.personalTemplates.find(t => t.id === personalTemplateId);
-    src = pt ? pt.items : [];
+    const src = pt ? pt.items : [];
+    items = src.map(t => ({
+      id: uid(), name: t.name, cat: t.cat,
+      checked: false, qty: 1, note: '', assignedTo: members[0]?.id || 'all',
+    }));
   } else {
-    src = TEMPLATES[templateKey] || [];
+    items = buildTemplateItems(templateKey || 'blank', members, duration || 'week');
   }
-  const items = src.map(t => ({
-    id: uid(), name: t.name, cat: t.cat,
-    checked: false, qty: 1, note: '', assignedTo: 'all',
-  }));
+
   const trip = {
-    id: uid(), name, members: [], items, comments: [],
+    id: uid(), name, members, items, comments: [],
     departureDate: departureDate || null,
   };
   state.trips.push(trip);
   state.activeTrip   = trip.id;
-  state.activeMember = 'all';
+  state.activeMember = members.length > 0 ? members[0].id : 'all';
   saveState();
   renderAll();
 }
@@ -792,13 +1269,34 @@ function deleteActiveTrip() {
   renderAll();
 }
 
-function addMember(name, color, isKid) {
+function addMember(name, color, profile) {
   const trip = getActiveTrip();
   if (!trip) return;
   if (!trip.members) trip.members = [];
-  trip.members.push({ id: uid(), name, color, isKid });
+  const isKid = profile === 'girl' || profile === 'boy';
+  trip.members.push({ id: uid(), name, color, isKid, profile: profile || 'man' });
   saveState();
   renderAll();
+}
+
+function moveToShared(itemId) {
+  const trip = getActiveTrip();
+  const item = trip && trip.items.find(i => i.id === itemId);
+  if (!item) return;
+  item.assignedTo = 'all';
+  saveState();
+  renderAll();
+  showToast('Moved to Shared');
+}
+
+function moveToPersonal(itemId) {
+  const trip = getActiveTrip();
+  const item = trip && trip.items.find(i => i.id === itemId);
+  if (!item) return;
+  item.assignedTo = state.activeMember !== 'all' ? state.activeMember : (trip.members[0]?.id || 'all');
+  saveState();
+  renderAll();
+  showToast('Moved to My List');
 }
 
 function addItem(name, cat, assignedTo, qty, note) {
@@ -912,7 +1410,69 @@ $('btn-dark-mode').addEventListener('click', () => {
 });
 
 // ── New trip ──
+// ── Traveler management (used during new-trip modal) ──
+function renderModalTravelers() {
+  const list = $('travelers-list');
+  if (!list) return;
+  list.innerHTML = modalTravelers.map(t => `
+    <div class="traveler-row" data-traveler-id="${t.id}">
+      <div class="traveler-color-dot" style="background:${t.color}"></div>
+      <input type="text" class="traveler-name-input" placeholder="Name" value="${escapeHtml(t.name)}" />
+      <div class="profile-pills">
+        ${['man','woman','girl','boy'].map(p =>
+          `<button class="profile-pill${t.profile === p ? ' active' : ''}" data-profile="${p}" data-traveler="${t.id}" type="button">${p[0].toUpperCase() + p.slice(1)}</button>`
+        ).join('')}
+      </div>
+      ${modalTravelers.length > 1
+        ? `<button class="icon-btn icon-btn-sm remove-traveler" data-traveler="${t.id}" type="button"><svg class="icon icon-sm"><use href="#ic-x"/></svg></button>`
+        : ''}
+    </div>`).join('');
+
+  list.querySelectorAll('.traveler-name-input').forEach(inp => {
+    const id = inp.closest('.traveler-row').dataset.travelerId;
+    inp.addEventListener('input', () => {
+      const t = modalTravelers.find(x => x.id === id);
+      if (t) t.name = inp.value;
+    });
+  });
+}
+
+function addModalTraveler() {
+  const idx = modalTravelers.length;
+  modalTravelers.push({ id: 'mt_' + uid(), name: '', profile: 'man', color: MEMBER_COLORS[idx % MEMBER_COLORS.length] });
+  renderModalTravelers();
+}
+
+$('travelers-list').addEventListener('click', e => {
+  const pill = e.target.closest('.profile-pill');
+  if (pill) {
+    const id = pill.dataset.traveler;
+    const t  = modalTravelers.find(x => x.id === id);
+    if (t) { t.profile = pill.dataset.profile; renderModalTravelers(); }
+    return;
+  }
+  const rem = e.target.closest('.remove-traveler');
+  if (rem) {
+    const id = rem.dataset.traveler;
+    modalTravelers = modalTravelers.filter(x => x.id !== id);
+    renderModalTravelers();
+  }
+});
+
+$('btn-add-traveler').addEventListener('click', addModalTraveler);
+
+$('duration-select').addEventListener('click', e => {
+  const pill = e.target.closest('.duration-pill');
+  if (!pill) return;
+  modalDuration = pill.dataset.duration;
+  document.querySelectorAll('.duration-pill').forEach(p => p.classList.toggle('active', p === pill));
+});
+
 function openNewTripModal() {
+  modalTravelers = [];
+  modalDuration  = 'week';
+  addModalTraveler(); // start with one traveler row
+
   const ptRow = $('personal-templates-row');
   const ptSel = $('personal-template-select');
   if (state.personalTemplates.length > 0) {
@@ -921,12 +1481,17 @@ function openNewTripModal() {
   } else {
     ptRow.classList.add('hidden');
   }
-  $('modal-trip-title').textContent    = 'New Trip';
-  $('modal-trip-confirm').textContent  = 'Create';
-  $('trip-name-input').value           = '';
-  $('trip-date-input').value           = '';
+
+  $('modal-trip-title').textContent   = 'New Trip';
+  $('modal-trip-confirm').textContent = 'Create';
+  $('trip-name-input').value          = '';
+  $('trip-date-input').value          = '';
   $('template-section').classList.remove('hidden');
+  $('travelers-section').classList.remove('hidden');
   $('modal-trip').dataset.mode = 'new';
+
+  // Reset duration pills
+  document.querySelectorAll('.duration-pill').forEach(p => p.classList.toggle('active', p.dataset.duration === 'week'));
   openModal('modal-trip');
 }
 
@@ -937,15 +1502,22 @@ $('modal-trip-confirm').addEventListener('click', () => {
   const name = $('trip-name-input').value.trim();
   if (!name) { $('trip-name-input').focus(); return; }
   const dateVal = $('trip-date-input').value;
+
   if ($('modal-trip').dataset.mode === 'rename') {
     renameTrip(name, dateVal);
   } else {
+    // Validate: all traveler names filled
+    const emptyRow = $('travelers-list').querySelector('.traveler-name-input');
+    if (emptyRow && !emptyRow.value.trim() && modalTravelers.length === 1) {
+      emptyRow.focus(); return;
+    }
+    const travelers = modalTravelers.map((t, i) => ({ ...t, name: t.name.trim() || `Traveler ${i + 1}` }));
     const ptRow = $('personal-templates-row');
     const ptVal = $('personal-template-select').value;
     if (!ptRow.classList.contains('hidden') && ptVal) {
-      createTrip(name, null, ptVal, dateVal);
+      createTrip(name, null, ptVal, travelers, modalDuration, dateVal);
     } else {
-      createTrip(name, $('template-select').value, null, dateVal);
+      createTrip(name, $('template-select').value, null, travelers, modalDuration, dateVal);
     }
   }
   closeModal();
@@ -962,7 +1534,7 @@ $('btn-rename-trip').addEventListener('click', () => {
   $('trip-name-input').value          = trip.name;
   $('trip-date-input').value          = trip.departureDate || '';
   $('template-section').classList.add('hidden');
-  $('personal-templates-row').classList.add('hidden');
+  $('travelers-section').classList.add('hidden');
   $('modal-trip').dataset.mode = 'rename';
   openModal('modal-trip');
 });
@@ -976,7 +1548,7 @@ $('btn-trip-date').addEventListener('click', () => {
   $('trip-name-input').value          = trip.name;
   $('trip-date-input').value          = trip.departureDate || '';
   $('template-section').classList.add('hidden');
-  $('personal-templates-row').classList.add('hidden');
+  $('travelers-section').classList.add('hidden');
   $('modal-trip').dataset.mode = 'rename';
   openModal('modal-trip');
 });
@@ -1008,11 +1580,15 @@ $('btn-kid-mode').addEventListener('click', () => {
 // ── Add member (delegated) ──
 document.addEventListener('click', e => {
   if (e.target.closest('#btn-add-member')) {
-    $('color-picker').innerHTML = MEMBER_COLORS.map((c, i) =>
-      `<button class="color-swatch${i === 0 ? ' selected' : ''}" style="background:${c}" data-color="${c}" type="button"></button>`
+    const trip = getActiveTrip();
+    const usedColors = (trip?.members || []).map(m => m.color);
+    const nextColor  = MEMBER_COLORS.find(c => !usedColors.includes(c)) || MEMBER_COLORS[0];
+    $('color-picker').innerHTML = MEMBER_COLORS.map(c =>
+      `<button class="color-swatch${c === nextColor ? ' selected' : ''}" style="background:${c}" data-color="${c}" type="button"></button>`
     ).join('');
     $('member-name-input').value = '';
-    $('member-is-kid').checked = false;
+    // Reset profile pills to Man
+    document.querySelectorAll('#member-profile-pills .profile-pill').forEach((p, i) => p.classList.toggle('active', i === 0));
     openModal('modal-member');
     return;
   }
@@ -1024,6 +1600,13 @@ document.addEventListener('click', e => {
   }
 });
 
+$('member-profile-pills').addEventListener('click', e => {
+  const pill = e.target.closest('.profile-pill');
+  if (!pill) return;
+  document.querySelectorAll('#member-profile-pills .profile-pill').forEach(p => p.classList.remove('active'));
+  pill.classList.add('active');
+});
+
 $('color-picker').addEventListener('click', e => {
   const sw = e.target.closest('.color-swatch');
   if (!sw) return;
@@ -1032,11 +1615,12 @@ $('color-picker').addEventListener('click', e => {
 });
 
 $('modal-member-confirm').addEventListener('click', () => {
-  const name = $('member-name-input').value.trim();
+  const name    = $('member-name-input').value.trim();
   if (!name) { $('member-name-input').focus(); return; }
-  const sw    = document.querySelector('.color-swatch.selected');
-  const color = sw ? sw.dataset.color : MEMBER_COLORS[0];
-  addMember(name, color, $('member-is-kid').checked);
+  const sw      = document.querySelector('.color-swatch.selected');
+  const color   = sw ? sw.dataset.color : MEMBER_COLORS[0];
+  const profile = document.querySelector('#member-profile-pills .profile-pill.active')?.dataset.profile || 'man';
+  addMember(name, color, profile);
   closeModal();
 });
 
@@ -1126,9 +1710,13 @@ $('categories-container').addEventListener('click', e => {
   const del = e.target.closest('.item-delete');
   const ed  = e.target.closest('.item-edit');
   const lbl = e.target.closest('.item-label');
-  if (cb)  { toggleItem(cb.dataset.id);  return; }
-  if (del) { deleteItem(del.dataset.id); return; }
+  const mts = e.target.closest('.move-to-shared');
+  const mtp = e.target.closest('.move-to-personal');
+  if (cb)  { toggleItem(cb.dataset.id);       return; }
+  if (del) { deleteItem(del.dataset.id);       return; }
   if (ed)  { openItemEditModal(ed.dataset.id); return; }
+  if (mts) { moveToShared(mts.dataset.id);     return; }
+  if (mtp) { moveToPersonal(mtp.dataset.id);   return; }
   if (lbl) { const row = lbl.closest('.item-row'); if (row) toggleItem(row.dataset.id); }
 });
 
